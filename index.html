@@ -3,592 +3,850 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>+Tecnologia-Py | Catálogo de Créditos</title>
-  
-  <!-- Configuración PWA e Icono Directo -->
-  <meta name="theme-color" content="#a3e635">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="+Tecnologia-Py">
-
-  <!-- ICONO DIRECTO -->
-  <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/2586/2586488.png">
-  <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2586/2586488.png">
-
+  <title>Catálogo Móvil & Servicios</title>
   <style>
     :root {
-      --bg: #090d0a;
-      --card-bg: #121a14;
-      --card-border: #243628;
-      --accent: #a3e635; /* Verde Limón */
-      --accent-hover: #84cc16;
-      --text: #f8fafc;
-      --subtext: #94a3b8;
-      --danger: #ef4444;
+      --primary: #25d366;
+      --dark: #121212;
+      --card-bg: #1e1e1e;
+      --text: #ffffff;
+      --text-secondary: #a0a0a0;
+      --accent: #007bff;
     }
 
-    * { box-sizing: border-box; font-family: system-ui, -apple-system, sans-serif; }
+    * {
+      box-sizing: border-box;
+    }
 
     body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--dark);
+      color: var(--text);
       margin: 0;
       padding: 0;
-      background-color: var(--bg);
-      color: var(--text);
-      padding-bottom: 40px;
     }
 
-    /* BANNER ANIMADO */
-    .ticker-wrap {
-      background: #84cc16;
-      color: #000;
-      font-weight: 900;
-      font-size: 0.82rem;
-      padding: 8px 0;
-      overflow: hidden;
-      white-space: nowrap;
+    header {
+      background-color: var(--card-bg);
+      padding: 15px 20px;
+      text-align: center;
+      border-bottom: 1px solid #333;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    header h1 {
+      margin: 0;
+      font-size: 1.2rem;
       text-transform: uppercase;
       letter-spacing: 1px;
     }
 
-    .ticker-move {
-      display: inline-block;
-      animation: ticker 15s linear infinite;
+    header p {
+      margin: 5px 0 0;
+      font-size: 0.85rem;
+      color: var(--primary);
     }
 
-    @keyframes ticker {
-      0% { transform: translate3d(100%, 0, 0); }
-      100% { transform: translate3d(-100%, 0, 0); }
-    }
-
-    header {
-      background: var(--card-bg);
-      border-bottom: 1px solid var(--card-border);
-      padding: 10px 15px;
+    /* Categorías - Scroll horizontal */
+    .nav-categories {
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      flex-wrap: wrap;
-      gap: 8px;
+      overflow-x: auto;
+      background-color: #181818;
+      padding: 10px;
+      gap: 10px;
+      border-bottom: 1px solid #2a2a2a;
+      scrollbar-width: none;
     }
 
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 8px;
+    .nav-categories::-webkit-scrollbar {
+      display: none;
     }
 
-    .brand-svg {
-      width: 26px;
-      height: 26px;
-      fill: var(--accent);
-    }
-
-    .brand h1 {
-      font-size: 1.1rem;
-      margin: 0;
-      color: var(--accent);
-      font-weight: 800;
-    }
-
-    .visit-badge {
-      background: #17241a;
-      border: 1px solid var(--accent);
-      padding: 4px 10px;
-      border-radius: 20px;
-      font-size: 0.75rem;
-      color: var(--accent);
-      font-weight: bold;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
-
-    .header-actions {
-      display: flex;
-      gap: 6px;
-    }
-
-    .btn-action {
-      background: var(--card-border);
-      color: white;
-      border: 1px solid var(--accent);
-      padding: 6px 10px;
-      border-radius: 20px;
-      font-size: 0.75rem;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    .btn-install {
-      background: var(--accent);
-      color: #000;
+    .btn-category {
+      background-color: #2a2a2a;
+      color: var(--text);
       border: none;
-    }
-
-    .wrap {
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 15px;
-    }
-
-    .filter-bar {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 15px;
-      flex-wrap: wrap;
-    }
-
-    .search-input {
-      flex: 1;
-      min-width: 100%;
-      padding: 12px 15px;
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 8px;
-      color: white;
-      font-size: 0.9rem;
-    }
-
-    .category-btn {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      color: var(--subtext);
-      padding: 8px 12px;
+      padding: 8px 16px;
       border-radius: 20px;
-      font-size: 0.8rem;
+      white-space: nowrap;
       cursor: pointer;
-      font-weight: 600;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
     }
 
-    .category-btn.active {
-      background: var(--accent);
+    .btn-category.active, .btn-category:hover {
+      background-color: var(--primary);
       color: #000;
       font-weight: bold;
-      border-color: var(--accent);
     }
 
-    .grid {
+    .container {
+      padding: 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .section-content {
+      display: none;
+    }
+
+    .section-content.active {
+      display: block;
+    }
+
+    .brand-title {
+      font-size: 1.3rem;
+      color: var(--primary);
+      margin: 25px 0 15px 0;
+      padding-bottom: 5px;
+      border-bottom: 2px solid #333;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Grid de Productos */
+    .product-grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 15px;
+      gap: 20px;
     }
 
     .product-card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 12px;
+      background-color: var(--card-bg);
+      border-radius: 10px;
       padding: 15px;
+      border: 1px solid #2a2a2a;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
     }
 
-    .product-img {
-      width: 100%;
-      height: 190px;
-      object-fit: contain;
-      background: #080d09;
-      border-radius: 8px;
-      margin-bottom: 10px;
-      padding: 5px;
-    }
-
     .product-title {
-      font-size: 1.1rem;
-      margin: 0 0 5px 0;
-      color: white;
-      font-weight: 700;
+      font-size: 1.05rem;
+      font-weight: bold;
+      margin-bottom: 5px;
     }
 
-    .product-desc {
-      font-size: 0.8rem;
-      color: var(--subtext);
-      margin-bottom: 12px;
+    .product-price {
+      color: var(--primary);
+      font-size: 0.95rem;
+      font-weight: bold;
+      margin-bottom: 10px;
     }
 
-    .pricing-table {
-      background: #17241a;
-      border-radius: 8px;
-      padding: 10px;
-      margin-bottom: 12px;
-      border: 1px solid #283d2c;
-    }
-
-    .price-row {
-      display: flex;
-      justify-content: space-between;
+    .product-details {
       font-size: 0.85rem;
-      padding: 4px 0;
+      color: var(--text-secondary);
+      margin-bottom: 15px;
     }
 
-    .price-row b {
-      color: var(--accent);
+    .product-details ul {
+      list-style: none;
+      padding: 0;
+      margin: 5px 0 0 0;
+    }
+
+    .product-details li {
+      margin-bottom: 3px;
+    }
+
+    .badge-warranty {
+      font-size: 0.75rem;
+      background-color: #333;
+      color: #fff;
+      padding: 2px 6px;
+      border-radius: 4px;
+      margin-bottom: 8px;
+      display: inline-block;
     }
 
     .btn-whatsapp {
-      background: var(--accent);
-      color: #000;
-      font-weight: bold;
-      border: none;
-      border-radius: 8px;
-      padding: 12px;
-      width: 100%;
-      cursor: pointer;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 8px;
-      text-decoration: none;
-      font-size: 0.9rem;
-    }
-
-    .btn-delete {
-      background: var(--danger);
-      color: white;
-      border: none;
-      padding: 6px;
-      border-radius: 6px;
-      font-size: 0.75rem;
-      cursor: pointer;
-      margin-top: 8px;
-      width: 100%;
-    }
-
-    #adminPanel {
-      display: none;
-      background: var(--card-bg);
-      border: 1px solid var(--accent);
-      border-radius: 12px;
-      padding: 15px;
-      margin-bottom: 20px;
-    }
-
-    .form-group { margin-bottom: 10px; }
-    .form-group label { display: block; font-size: 0.8rem; color: var(--subtext); margin-bottom: 4px; }
-    .form-group input, .form-group select, .form-group textarea {
-      width: 100%; padding: 8px; background: #090d0a; border: 1px solid var(--card-border); border-radius: 6px; color: white;
-    }
-
-    .btn-submit {
-      background: var(--accent); color: #000; font-weight: bold; border: none; padding: 10px; width: 100%; border-radius: 6px; cursor: pointer;
-    }
-
-    .disclaimer {
+      display: block;
       text-align: center;
-      font-size: 0.72rem;
-      color: #64748b;
-      margin-top: 25px;
-      padding: 10px;
-      line-height: 1.4;
-      border-top: 1px dashed var(--card-border);
+      background-color: var(--primary);
+      color: #000;
+      text-decoration: none;
+      font-weight: bold;
+      padding: 10px 15px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      transition: transform 0.2s ease, background-color 0.2s ease;
+    }
+
+    .btn-whatsapp:hover {
+      transform: scale(1.02);
+      background-color: #20bd5a;
+    }
+
+    /* Cards para la información comercial */
+    .info-card {
+      background-color: var(--card-bg);
+      border-radius: 12px;
+      padding: 30px;
+      text-align: center;
+      margin-top: 10px;
+      border: 1px solid #333;
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .info-card h2 {
+      color: var(--primary);
+      margin-top: 0;
+    }
+
+    .info-card p {
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin-bottom: 25px;
+    }
+
+    .placeholder-text {
+      text-align: center;
+      color: var(--text-secondary);
+      padding: 60px 0;
     }
   </style>
 </head>
 <body>
 
-<div class="ticker-wrap">
-  <div class="ticker-move">
-    🔥 ¡SOLICÍTALO SIN ENTREGA INICIAL! • MÍNIMOS REQUISITOS • EVALUACIÓN RÁPIDA POR WHATSAPP 🔥
-  </div>
-</div>
+  <header>
+    <h1>Catálogo de Productos</h1>
+    <p>Contacto: (0971) 826 300 | Sin Entrega Inicial</p>
+  </header>
 
-<header>
-  <div class="brand">
-    <svg class="brand-svg" viewBox="0 0 24 24"><path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z"/></svg>
-    <h1>+Tecnologia-Py</h1>
-  </div>
+  <!-- Navegación de Categorías -->
+  <nav class="nav-categories">
+    <button class="btn-category active" onclick="switchCategory('catalogo', this)">Catálogo</button>
+    <button class="btn-category" onclick="switchCategory('notebook', this)">Notebook</button>
+    <button class="btn-category" onclick="switchCategory('hogar', this)">Hogar</button>
+    <button class="btn-category" onclick="switchCategory('parlantes', this)">Parlantes</button>
+    <button class="btn-category" onclick="switchCategory('trabaja', this)">Trabaja con Nosotros</button>
+    <button class="btn-category" onclick="switchCategory('afiliados', this)">Gana como Afiliado</button>
+  </nav>
 
-  <div class="visit-badge">
-    👁️ <span id="visitCount">...</span> vistas
-  </div>
+  <div class="container">
 
-  <div class="header-actions">
-    <button class="btn-action" onclick="toggleAdmin()">⚙️ Admin</button>
-    <button class="btn-action btn-install" onclick="instalarApp()">📱 Descargar</button>
-  </div>
-</header>
+    <!-- SECCIÓN 1: CATÁLOGO COMPLETO -->
+    <section id="catalogo" class="section-content active">
 
-<div class="wrap">
-
-  <div id="adminPanel">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-      <h2 style="font-size: 1rem; margin: 0; color: var(--accent);">Cargar Nuevo Producto</h2>
-      <button onclick="cerrarAdmin()" style="background: var(--danger); color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer;">Cerrar</button>
-    </div>
-
-    <form id="productForm" onsubmit="guardarProducto(event)">
-      <div class="form-group">
-        <label>Categoría:</label>
-        <select id="pCategoria" required>
-          <option value="celulares">Celulares</option>
-          <option value="electro">Electrodomésticos</option>
-          <option value="varios">Varios</option>
-        </select>
-      </div>
-
-      <div class="form-group">
-        <label>Marca y Modelo:</label>
-        <input type="text" id="pNombre" placeholder="Ej: Samsung Galaxy A06" required>
-      </div>
-
-      <!-- OPCIÓN DE SUBIR IMAGEN DIRECTA O PONER URL -->
-      <div class="form-group">
-        <label>Subir Imagen desde el dispositivo:</label>
-        <input type="file" id="pImagenFile" accept="image/*" onchange="convertirImagenABase64(event)">
-      </div>
-
-      <div class="form-group">
-        <label>O ingresar URL de Imagen:</label>
-        <input type="url" id="pImagen" placeholder="https://...">
-      </div>
-
-      <div class="form-group">
-        <label>Especificaciones:</label>
-        <textarea id="pDesc" rows="2" placeholder="Ej: 64GB Memoria, Pantalla 6.7''..." required></textarea>
-      </div>
-
-      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px;">
-        <div class="form-group">
-          <label>12 Cuotas:</label>
-          <input type="text" id="pC12" placeholder="165.541 Gs." required>
-        </div>
-        <div class="form-group">
-          <label>24 Cuotas:</label>
-          <input type="text" id="pC24" placeholder="99.775 Gs." required>
-        </div>
-        <div class="form-group">
-          <label>36 Cuotas:</label>
-          <input type="text" id="pC36" placeholder="63.000 Gs." required>
-        </div>
-      </div>
-
-      <button type="submit" class="btn-submit">Publicar en Catálogo</button>
-    </form>
-  </div>
-
-  <div class="filter-bar">
-    <input type="text" id="searchInput" class="search-input" placeholder="Buscar modelo o marca..." onkeyup="filtrarProductos()">
-    <button class="category-btn active" onclick="filtrarCategoria('todos', this)">Todos</button>
-    <button class="category-btn" onclick="filtrarCategoria('celulares', this)">Celulares</button>
-    <button class="category-btn" onclick="filtrarCategoria('electro', this)">Electrodomésticos</button>
-    <button class="category-btn" onclick="filtrarCategoria('varios', this)">Varios</button>
-  </div>
-
-  <div class="grid" id="productGrid"></div>
-
-  <div class="disclaimer">
-    * Todos los productos y cuotas están sujetos a análisis de crédito y modificaciones de precios según la entidad financiera.
-  </div>
-
-</div>
-
-<script>
-  const MI_WHATSAPP = "595971826300";
-  const ADMIN_PASS = "admin123";
-  let modoAdminActivado = false;
-  let imagenBase64Cargada = "";
-
-  const productosBase = [
-    {
-      id: 1,
-      categoria: "celulares",
-      nombre: "Samsung Galaxy A06 (64GB)",
-      imagen: "https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=400",
-      descripcion: "Pantalla 6.7 HD+, Procesador Octa-Core, Cámara 50MP, Batería 5000mAh.",
-      cuotas: { c12: "165.541 Gs.", c24: "99.775 Gs.", c36: "63.000 Gs." }
-    },
-    {
-      id: 2,
-      categoria: "celulares",
-      nombre: "Samsung Galaxy A07 (64GB)",
-      imagen: "https://images.unsplash.com/photo-1598327105666-5b89351aff97?w=400",
-      descripcion: "Pantalla fluida 90Hz, 64GB memoria interna, Diseño ultrafino.",
-      cuotas: { c12: "179.054 Gs.", c24: "108.207 Gs.", c36: "68.000 Gs." }
-    },
-    {
-      id: 3,
-      categoria: "celulares",
-      nombre: "Samsung Galaxy A16 (128GB)",
-      imagen: "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400",
-      descripcion: "128GB Almacenamiento, Pantalla AMOLED, Cámara Triple Profesional.",
-      cuotas: { c12: "207.207 Gs.", c24: "125.773 Gs.", c36: "80.000 Gs." }
-    },
-    {
-      id: 4,
-      categoria: "celulares",
-      nombre: "Samsung Galaxy A17 5G (128GB)",
-      imagen: "https://images.unsplash.com/photo-1580910051074-3eb694886505?w=400",
-      descripcion: "Conexión 5G Ultra Rápida, 128GB Memoria, Batería de carga rápida.",
-      cuotas: { c12: "240.991 Gs.", c24: "146.852 Gs.", c36: "95.000 Gs." }
-    }
-  ];
-
-  function obtenerProductos() {
-    const almacenados = localStorage.getItem('tecnologia_py_productos_v2');
-    return almacenados ? JSON.parse(almacenados) : productosBase;
-  }
-
-  function guardarProductosEnStorage(lista) {
-    localStorage.setItem('tecnologia_py_productos_v2', JSON.stringify(lista));
-  }
-
-  function convertirImagenABase64(event) {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        imagenBase64Cargada = e.target.result;
-      };
-      reader.readAsDataURL(file);
-    }
-  }
-
-  let categoriaActual = 'todos';
-
-  function renderizarProductos(lista) {
-    const grid = document.getElementById('productGrid');
-    grid.innerHTML = '';
-
-    if (lista.length === 0) {
-      grid.innerHTML = '<p style="color:var(--subtext); text-align:center; grid-column:1/-1;">No hay productos disponibles en esta categoría.</p>';
-      return;
-    }
-
-    lista.forEach(p => {
-      const msg = encodeURIComponent(`Hola +Tecnologia-Py, estoy interesado en solicitar el *${p.nombre}* a cuotas (Sin Entrega Inicial). ¿Cuáles son los requisitos?`);
-      const linkWa = `https://wa.me/${MI_WHATSAPP}?text=${msg}`;
-
-      let botonBorrar = modoAdminActivado ? `<button class="btn-delete" onclick="eliminarProducto(${p.id})">🗑️ Eliminar Producto</button>` : '';
-
-      grid.innerHTML += `
+      <!-- SAMSUNG -->
+      <div class="brand-title">Samsung</div>
+      <div class="product-grid">
         <div class="product-card">
           <div>
-            <img src="${p.imagen}" alt="${p.nombre}" class="product-img" onerror="this.src='https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400'">
-            <h3 class="product-title">${p.nombre}</h3>
-            <p class="product-desc">${p.descripcion}</p>
-            
-            <div class="pricing-table">
-              <div class="price-row"><span>12 Cuotas:</span> <b>${p.cuotas.c12}</b></div>
-              <div class="price-row"><span>24 Cuotas:</span> <b>${p.cuotas.c24}</b></div>
-              <div class="price-row"><span>36 Cuotas:</span> <b>${p.cuotas.c36}</b></div>
+            <div class="product-title">Samsung Galaxy A07 (128 GB)</div>
+            <div class="product-price">Contado: Gs 937.000[span_1](start_span)[span_1](end_span)</div>
+            <div class="product-details">
+              <strong>Cuotas:</strong> 6x 367.386 | 12x 235.023 | 18x 165.253 | 24x 132.589 | 36x 85.584[span_2](start_span)[span_2](end_span)<br>
+              <strong>Combo 2x1:</strong> 12x 318.131 | 24x 184.444[span_3](start_span)[span_3](end_span)
             </div>
           </div>
-
-          <a href="${linkWa}" target="_blank" class="btn-whatsapp">
-            📲 Solicitar por WhatsApp
-          </a>
-          ${botonBorrar}
+          <a href="https://wa.me/595971826300?text=Hola,%20me%20interesa%20el%20Samsung%20Galaxy%20A07" class="btn-whatsapp" target="_blank">Consultar</a>
         </div>
-      `;
-    });
-  }
 
-  function filtrarProductos() {
-    const query = document.getElementById('searchInput').value.toLowerCase();
-    const productos = obtenerProductos();
-    const filtrados = productos.filter(p => {
-      const coincideCat = categoriaActual === 'todos' || p.categoria === categoriaActual;
-      const coincideTexto = p.nombre.toLowerCase().includes(query) || p.descripcion.toLowerCase().includes(query);
-      return coincideCat && coincideTexto;
-    });
-    renderizarProductos(filtrados);
-  }
+        <div class="product-card">
+          <div>
+            <div class="product-title">Samsung Galaxy A16 (128 GB)</div>
+            <div class="product-price">Contado: Gs 1.190.000[span_4](start_span)[span_4](end_span)</div>
+            <div class="product-details">
+              <strong>Cuotas:</strong> 6x 399.746 | 12x 252.252 | 18x 177.977 | 24x 143.339 | 36x 92.912[span_5](start_span)[span_5](end_span)<br>
+              <strong>Combo 2x1:</strong> 12x 349.662 | 24x 204.117[span_6](start_span)[span_6](end_span)
+            </div>
+          </div>
+          <a href="https://wa.me/595971826300?text=Hola,%20me%20interesa%20el%20Samsung%20Galaxy%20A16" class="btn-whatsapp" target="_blank">Consultar</a>
+        </div>
 
-  function filtrarCategoria(cat, btn) {
-    categoriaActual = cat;
-    document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    filtrarProductos();
-  }
+        <div class="product-card">
+          <div>
+            <div class="product-title">Samsung Galaxy A26 5G (256 GB)</div>
+            <div class="product-price">Contado: Gs 1.950.000[span_7](start_span)[span_7](end_span)</div>
+            <div class="product-details">
+              <strong>Cuotas:</strong> 6x 560.491 | 12x 337.838 | 18x 241.184 | 24x 196.740 | 36x 129.310[span_8](start_span)[span_8](end_span)<br>
+              <strong>Combo 2x1:</strong> 12x 522.523 | 24x 311.973[span_9](start_span)[span_9](end_span)
+            </div>
+          </div>
+          <a href="https://wa.me/595971826300?text=Hola,%20me%20interesa%20el%20Samsung%20Galaxy%20A26%205G" class="btn-whatsapp" target="_blank">Consultar</a>
+        </div>
 
-  function toggleAdmin() {
-    if (!modoAdminActivado) {
-      const pass = prompt("Contraseña de Administrador:");
-      if (pass === ADMIN_PASS) {
-        modoAdminActivado = true;
-        document.getElementById('adminPanel').style.display = 'block';
-        filtrarProductos();
-      } else if (pass !== null) {
-        alert("Contraseña incorrecta.");
-      }
-    } else {
-      document.getElementById('adminPanel').style.display = 'block';
+        <div class="product-card">
+          <div>
+            <div class="product-title">Samsung Galaxy A36 5G (256 GB)</div>
+            <div class="product-price">Contado: Gs 2.390.000[span_10](start_span)[span_10](end_span)</div>
+            <div class="product-details">
+              <strong>Cuotas:</strong> 6x 650.804 | 12x 385.923 | 18x 276.697 | 24x 226.743 | 36x 149.761[span_11](start_span)[span_11](end_span)<br>
+              <strong>Combo 2x1:</strong> 12x 619.369 | 24x 372.400[span_12](start_span)[span_12](end_span)
+            </div>
+          </div>
+          <a href="https://wa.me/595971826300?text=Hola,%20me%20interesa%20el%20Samsung%20Galaxy%20A36%205G" class="btn-whatsapp" target="_blank">Consultar</a>
+        </div>
+
+        <div class="product-card">
+          <div>
+            <div class="product-title">Samsung Galaxy A37 5G (128 GB)</div>
+            <div class="product-price">Contado: Gs 2.990.000[span_13](start_span)[span_13](end_span)</div>
+            <div class="product-details">
+              <strong>Cuotas:</strong> 6x 771.997 | 12x 450.450 | 18x 324.351 | 24x 267.004 | 36x 177.203[span_14](start_span)[span_14](end_span)<br>
+              <strong>Combo 2x1:</strong> 12x 715.090 | 24x 432.125[span_15](start_span)[span_15](end_span)
+            </div>
+          </div>
+          <a href="https://wa.me/595971826300?text=Hola,%20me%20interesa%20el%20Samsung%20Galaxy%20A37%205G" class="btn-whatsapp" target="_blank">Consultar</a>
+        </div>
+
+        <div class="product-card">
+          <div>
+            <div class="product-title">Samsung Galaxy A56 5G (256 GB)</div>
+            <div class="product-price">Contado: Gs 3.430.000[span_16](start_span)[span_16](end_span)</div>
+            <div class="product-details">
+              <strong>Cuotas:</strong> 6x 877.750 | 12x 506.757 | 18x 365.935 | 24x 302.136 | 36x 201.149[span_17](start_span)[span_17](end_span)<br>
+              <strong>Combo 2x1:</strong> 12x 850.225 | 24x 516.442[span_18](start_span)[span_18](end_span)
+            </div>
+          </div>
+          <a href="https://wa.me/595971826300?text=Hola,%20me%20interesa%20el%20Samsung%20Galaxy%20A56%205G" class="btn-whatsapp" target="_blank">Consultar</a>
+        </div>
+
+        <div class="product-card">
+          <div>
+            <div class="product-title">Samsung Galaxy S25 FE (256 GB)</div>
+            <div class="product-price">Contado: Gs 3.990.000[span_19](start_span)[span_19](end_span)</div>
+            <div class="product-details">
+              <strong>Cuotas:</strong> 6x 977.157 | 12x 559.685 | 18x 405.023 | 24x 335.160 | 36x 223.659[span_20](start_span)[span_20](end_span)
+            </div>
+          </div>
+          <a href="https://wa.me/595971826300?text=Hola,%20me%20interesa%20el%20Samsung%20Galaxy%20S25%20FE" class="btn-whatsapp" target="_blank">Consultar</a>
+        </div>
+
+        <div class="product-card">
+          <div>
+            <div class="product-title">Samsung Galaxy S25+ (256 GB)</div>
+            <div class="product-price">Contado: Gs 5.460.000[span_21](start_span)[span_21](end_span)</div>
+            <div class="product-details">
+              <strong>Cuotas:</strong> 6x 1.302.665 | 12x 732.995 | 18x 533.017 | 24x 443.297 | 36x 297.366[span_22](start_span)[span_22](end_span)
+            </div>
+          </div>
+          <a href="https://wa.me/595971826300?text=Hola,%20me%20interesa%20el%20Samsung%20Galaxy%20S25+" class="btn-whatsapp" target="_blank">Consultar</a>
+        </div>
+
+        <div class="product-card">
+          <div>
+            <div class="product-title">Samsung Galaxy S26 (256 GB)</div>
+            <div class="product-price">Contado: Gs 6.590.000[span_23](start_span)[span_23](end_span)</div>
+            <div class="product-details">
+              <strong>Cuotas:</strong> 6x 1.586.294 | 12x 884.009 | 18x 644.544 | 24x 537.521 | 36x 361.590[span_24](start_span)[span_24](end_span)
+            </div>
+          </div>
+          <a href="https://wa.me/595971826300?text=Hola,%20me%20interesa%20el%20Samsung%20Galaxy%20S26" class="btn-whatsapp" target="_blank">Consultar</a>
+        </div>
+      </div>
+
+      <!-- XIAOMI -->
+      <div class="brand-title">Xiaomi</div>
+      <div class="product-grid">
+        <div class="product-card">
+          <div>
+            <div class="product-title">Xiaomi Redmi A5 (64 GB)</div>
+            <div class="product-price">Contado: Gs 890.000[span_25](start_span)[span_25](end_span)</div>
+            <div class="product-details">
+              <strong>Cuotas:</strong> 6x 348.985 | 12x 225.225 | 18x 158.017 | 24x 126.476 | 36x 81.418[span_26](start_span)[span_26](end_span)<br>
+              <strong>Combo 2x1:</strong> 12x 292.793 | 24x 168.634[span_27](start_span)[span_27](end_span)
+            </div>
+          </div>
+          <a href="https://wa.me/595971826300?text=Hola,%20me%20interesa%20el%20Xiaomi%20Redmi%20A5" class="btn-whatsapp" target="_blank">Consultar</a>
+        </div>
+
+        <div class="product-card">
+          <div>
+            <div class="product-title">Xiaomi Redmi 15C (256 GB)</div>
+            <div class="product-price">Contado: Gs 1.315.000[span_28](start_span)[span_28](end_span)</div>
+            <div class="product-details">
+              <strong>Cuotas:</strong> 6x 425.338 | 12x 265.878 | 18x 188.041 | 24x 151.841 | 36x 98.707[span_29](start_span)[span_29](end_span)<br>
+              <strong>Combo 2x1:</strong> 12x 380.631 | 24x 223.440[span_30](start_span)[span_30](end_span)
+            </div>
+          </div>
+          <a href="https://wa.me/595971826300?text=Hola,%20me%20interesa%20el%20Xiaomi%20Redmi%2015C" class="btn-whatsapp" target="_blank">Consultar</a>
+        </div>
+
+        <div class="product-card">
+          <div>
+            <div class="product-title">Xiaomi POCO C71 (64 GB)</div>
+            <div class="product-price">Contado: Gs 690.000[span_31](start_span)[span_31](end_span)</div>
+            <div class="product-details">
+              <strong>Cuotas:</strong> 6x 348.985 | 12x 225.225 | 18x 158.017 | 24x 126.476 | 36x 81.418[span_32](start_span)[span_32](end_span)<br>
+              <strong>Combo 2x1:</strong> 12x 298.423 | 24x 172.147[span_33](start_span)[span_33](end_span)
+            </div>
+          </div>
+          <a href="https://wa.me/595971826300?text=Hola,%20me%20interesa%20el%20Xiaomi%20POCO%20C71" class="btn-whatsapp" target="_blank">Consultar</a>
+        </div>
+
+        <div class="product-card">
+          <div>
+            <div class="product-title">Xiaomi Note 15 (128 GB)</div>
+            <div class="product-price">Contado: Gs 1.390.000[span_34](start_span)[span_34](end_span)</div>
+            <div class="product-details">
+              <strong>Cuotas:</strong> 6x 444.162 | 12x 275.901 | 18x 195.442 | 24x 158.094 | 36x 102.969[span_35](start_span)[span_35](end_span)<br>
+              <strong>Combo 2x1:</strong> 12x 399.775 | 24x 235.385[span_36](start_span)[span_36](end_span)
+            </div>
+          </div>
+          <a href="https://wa.me/595971826300?text=Hola,%20me%20interesa%20el%20Xiaomi%20Note%2015%20128GB" class="btn-whatsapp" target="_blank">Consultar</a>
+        </div>
+
+        <div class="product-card">
+          <div>
+            <div class="product-title">Xiaomi Note 15 (256 GB)</div>
+            <div class="product-price">Contado: Gs 1.590.000[span_37](start_span)[span_37](end_span)</div>
+            <div class="product-details">
+              <strong>Cuotas:</strong> 6x 486.464 | 12x 298.423 | 18x 212.076 | 24x 172.147 | 36x 112.548[span_38](start_span)[span_38](end_span)<br>
+              <strong>Combo 2x1:</strong> 12x 444.820 | 24x 263.491[span_39](start_span)[span_39](end_span)
+            </div>
+          </div>
+          <a href="https://wa.me/595971826300?text=Hola,%20me%20interesa%20el%20Xiaomi%20Note%2015%20256GB" class="btn-whatsapp" target="_blank">Consultar</a>
+        </div>
+
+        <div class="product-card">
+          <div>
+            <div class="product-title">Xiaomi Note 15 Pro+ (256 GB)</div>
+            <div class="product-price">Contado: Gs 2.680.000[span_40](start_span)[span_40](end_span)</div>
+            <div class="product-details">
+              <strong>Cuotas:</strong> 6x 697.970 | 12x 411.036 | 18x 295.243 | 24x 242.411 | 36x 160.441[span_41](start_span)[span_41](end_span)<br>
+              <strong>Combo 2x1:</strong> 12x 670.045 | 24x 404.019[span_42](start_span)[span_42](end_span)
+            </div>
+          </div>
+          <a href="https://wa.me/595971826300?text=Hola,%20me%20interesa%20el%20Xiaomi%20Note%2015%20Pro+" class="btn-whatsapp" target="_blank">Consultar</a>
+        </div>
+      </div>
+
+      <!-- HONOR -->
+      <div class="brand-title">Honor</div>
+      <div class="product-grid">
+        <div class="product-card">
+          <div>
+            <div class="product-title">HONOR Magic 7 Lite (512 GB)</div>
+            <div class="product-price">Contado: Gs 2.390.000[span_43](start_span)[span_43](end_span)</div>
+            <div class="product-details">
+              <strong>Cuotas:</strong> 6x 634.518 | 12x 377.252 | 18x 270.293 | 24x 221.332 | 36x 146.073[span_44](start_span)[span_44](end_span)<br>
+              <strong>Combo 2x1:</strong> 12x 602.477 | 24x 361.861[span_45](start_span)[span_45](end_span)
+            </div>
+          </div>
+          <a href="https://wa.me/595971826300?text=Hola,%20me%20interesa%20el%20HONOR%20Magic%207%20Lite" class="btn-whatsapp" target="_blank">Consultar</a>
+        </div>
+
+        <div class="product-card">
+          <div>
+            <div class="product-title">HONOR Magic 8 Lite (512 GB)</div>
+            <div class="product-price">Contado: Gs 2.990.000[span_46](start_span)[span_46](end_span)</div>
+            <div class="product-details">
+              <strong>Cuotas:</strong> 6x 771.997 | 12x 450.450 | 18x 324.351 | 24x 267.004 | 36x 177.203[span_47](start_span)[span_47](end_span)<br>
+              <strong>Combo 2x1:</strong> 12x 743.243 | 24x 449.691[span_48](start_span)[span_48](end_span)
+            </div>
+          </div>
+          <a href="https://wa.me/595971826300?text=Hola,%20me%20interesa%20el%20HONOR%20Magic%208%20Lite" class="btn-whatsapp" target="_blank">Consultar</a>
+        </div>
+
+        <div class="product-card">
+          <div>
+            <div class="product-title">HONOR X5c (128 GB)</div>
+            <div class="product-price">Contado: Gs 940.000[span_49](start_span)[span_49](end_span)</div>
+            <div class="product-details">
+              <strong>Cuotas:</strong> 6x 366.963 | 12x 234.797 | 18x 165.086 | 24x 132.448 | 36x 85.489[span_50](start_span)[span_50](end_span)<br>
+              <strong>Combo 2x1:</strong> 12x 320.946 | 24x 186.200[span_51](start_span)[span_51](end_span)
+            </div>
+          </div>
+          <a href="https://wa.me/595971826300?text=Hola,%20me%20interesa%20el%20HONOR%20X5c" class="btn-whatsapp" target="_blank">Consultar</a>
+        </div>
+
+        <div class="product-card">
+          <div>
+            <div class="product-title">HONOR X5c Plus (256 GB)</div>
+            <div class="product-price">Contado: Gs 990.000[span_52](start_span)[span_52](end_span)</div>
+            <div class="product-details">
+              <strong>Cuotas:</strong> 6x 391.286 | 12x 247.748 | 18x 174.651 | 24x 140.528 | 36x 90.000[span_53](start_span)[span_53](end_span)<br>
+              <strong>Combo 2x1:</strong> 12x 343.468 | 24x 200.253[span_54](start_span)[span_54](end_span)
+            </div>
+          </div>
+          <a href="https://wa.me/595971826300?text=Hola,%20me%20interesa%20el%20HONOR%20X5c%20Plus" class="btn-whatsapp" target="_blank">Consultar</a>
+        </div>
+
+        <div class="product-card">
+          <div>
+            <div class="product-title">HONOR X7d 5G AI (256 GB)</div>
+            <div class="product-price">Contado: Gs 1.590.000[span_55](start_span)[span_55](end_span)</div>
+            <div class="product-details">
+              <strong>Cuotas:</strong> 6x 486.464 | 12x 298.423 | 18x 212.076 | 24x 172.147 | 36x 112.548[span_56](start_span)[span_56](end_span)<br>
+              <strong>Combo 2x1:</strong> 12x 444.820 | 24x 263.491[span_57](start_span)[span_57](end_span)
+            </div>
+          </div>
+          <a href="https://wa.me/595971826300?text=Hola,%20me%20interesa%20el%20HONOR%20X7d%205G%20AI" class="btn-whatsapp" target="_blank">Consultar</a>
+        </div>
+
+        <div class="product-card">
+          <div>
+            <div class="product-title">HONOR X9c (256 GB)</div>
+            <div class="product-price">Contado: Gs 2.190.000[span_58](start_span)[span_58](end_span)</div>
+            <div class="product-details">
+              <strong>Cuotas:</strong> 6x 592.217 | 12x 354.730 | 18x 253.659 | 24x 207.279 | 36x 136.494[span_59](start_span)[span_59](end_span)<br>
+              <strong>Combo 2x1:</strong> 12x 557.432 | 24x 333.755[span_60](start_span)[span_60](end_span)
+            </div>
+          </div>
+          <a href="https://wa.me/595971826300?text=Hola,%20me%20interesa%20el%20HONOR%20X9c" class="btn-whatsapp" target="_blank">Consultar</a>
+        </div>
+      </div>
+
+      <!-- INFINIX, TECNO, OUKITEL -->
+      <div class="brand-title">Infinix / Tecno / Oukitel</div>
+      <div class="product-grid">
+        <div class="product-card">
+          <div>
+            <div class="product-title">Infinix Hot 60i (128 GB)</div>
+            <div class="product-price">Contado: Gs 1.170.000[span_61](start_span)[span_61](end_span)</div>
+            <div class="product-details">
+              <strong>Cuotas:</strong> 6x 401.861 | 12x 253.378 | 18x 178.809 | 24x 144.042 | 36x 93.000[span_62](start_span)[span_62](end_span)
+            </div>
+          </div>
+          <a href="https://wa.me/595971826300?text=Hola,%20me%20interesa%20el%20Infinix%20Hot%2060i" class="btn-whatsapp" target="_blank">Consultar</a>
+        </div>
+
+        <div class="product-card">
+          <div>
+            <div class="product-title">Infinix Smart 20 (256 GB)</div>
+            <div class="product-price">Contado: Gs 1.290.000[span_63](start_span)[span_63](end_span)</div>
+            <div class="product-details">
+              <strong>Cuotas:</strong> 6x 423.012 | 12x 264.640 | 18x 187.126 | 24x 151.068 | 36x 98.180[span_64](start_span)[span_64](end_span)
+            </div>
+          </div>
+          <a href="https://wa.me/595971826300?text=Hola,%20me%20interesa%20el%20Infinix%20Smart%2020" class="btn-whatsapp" target="_blank">Consultar</a>
+        </div>
+
+        <div class="product-card">
+          <div>
+            <div class="product-title">Infinix GT 30 Pro (256 GB)</div>
+            <div class="product-price">Contado: Gs 3.170.000[span_65](start_span)[span_65](end_span)</div>
+            <div class="product-details">
+              <strong>Cuotas:</strong> 6x 846.024 | 12x 489.865 | 18x 353.460 | 24x 291.596 | 36x 193.000[span_66](start_span)[span_66](end_span)
+            </div>
+          </div>
+          <a href="https://wa.me/595971826300?text=Hola,%20me%20interesa%20el%20Infinix%20GT%2030%20Pro" class="btn-whatsapp" target="_blank">Consultar</a>
+        </div>
+
+        <div class="product-card">
+          <div>
+            <div class="product-title">Tecno Go 1 (128 GB)</div>
+            <div class="product-price">Contado: Gs 790.000[span_67](start_span)[span_67](end_span)</div>
+            <div class="product-details">
+              <strong>Cuotas:</strong> 6x 374.365 | 12x 238.739 | 18x 167.997 | 24x 134.907 | 36x 87.165[span_68](start_span)[span_68](end_span)
+            </div>
+          </div>
+          <a href="https://wa.me/595971826300?text=Hola,%20me%20interesa%20el%20Tecno%20Go%201" class="btn-whatsapp" target="_blank">Consultar</a>
+        </div>
+
+        <div class="product-card">
+          <div>
+            <div class="product-title">Tecno Spark Go 1 (64 GB)</div>
+            <div class="product-price">Contado: Gs 720.000[span_69](start_span)[span_69](end_span)</div>
+            <div class="product-details">
+              <strong>Cuotas:</strong> 6x 338.409 | 12x 219.595 | 18x 153.859 | 24x 122.962 | 36x 79.023[span_70](start_span)[span_70](end_span)
+            </div>
+          </div>
+          <a href="https://wa.me/595971826300?text=Hola,%20me%20interesa%20el%20Tecno%20Spark%20Go%201" class="btn-whatsapp" target="_blank">Consultar</a>
+        </div>
+
+        <div class="product-card">
+          <div>
+            <div class="product-title">Tecno Spark 20 Pro+ (256 GB)</div>
+            <div class="product-price">Contado: Gs 1.470.000[span_71](start_span)[span_71](end_span)</div>
+            <div class="product-details">
+              <strong>Cuotas:</strong> 6x 475.888 | 12x 292.793 | 18x 207.917 | 24x 168.634 | 36x 110.153[span_72](start_span)[span_72](end_span)
+            </div>
+          </div>
+          <a href="https://wa.me/595971826300?text=Hola,%20me%20interesa%20el%20Tecno%20Spark%2020%20Pro+" class="btn-whatsapp" target="_blank">Consultar</a>
+        </div>
+
+        <div class="product-card">
+          <div>
+            <div class="product-title">Oukitel C26 (128 GB)</div>
+            <div class="product-price">Contado: Gs 870.000[span_73](start_span)[span_73](end_span)</div>
+            <div class="product-details">
+              <strong>Cuotas:</strong> 6x 353.215 | 12x 227.477 | 18x 159.681 | 24x 127.881 | 36x 82.375[span_74](start_span)[span_74](end_span)
+            </div>
+          </div>
+          <a href="https://wa.me/595971826300?text=Hola,%20me%20interesa%20el%20Oukitel%20C26" class="btn-whatsapp" target="_blank">Consultar</a>
+        </div>
+
+        <div class="product-card">
+          <div>
+            <div class="product-title">Oukitel C65 (128 GB)</div>
+            <div class="product-price">Contado: Gs 870.000[span_75](start_span)[span_75](end_span)</div>
+            <div class="product-details">
+              <strong>Cuotas:</strong> 6x 353.215 | 12x 227.477 | 18x 159.681 | 24x 127.881 | 36x 82.375[span_76](start_span)[span_76](end_span)
+            </div>
+          </div>
+          <a href="https://wa.me/595971826300?text=Hola,%20me%20interesa%20el%20Oukitel%20C65" class="btn-whatsapp" target="_blank">Consultar</a>
+        </div>
+
+        <div class="product-card">
+          <div>
+            <div class="product-title">Oukitel P1 (256 GB)</div>
+            <div class="product-price">Contado: Gs 1.690.000[span_77](start_span)[span_77](end_span)</div>
+            <div class="product-details">
+              <strong>Cuotas:</strong> 6x 497.039 | 12x 304.054 | 18x 216.234 | 24x 175.660 | 36x 114.943[span_78](start_span)[span_78](end_span)
+            </div>
+          </div>
+          <a href="https://wa.me/595971826300?text=Hola,%20me%20interesa%20el%20Oukitel%20P1" class="btn-whatsapp" target="_blank">Consultar</a>
+        </div>
+      </div>
+
+      <!-- APPLE -->
+      <div class="brand-title">Apple (iPhone)</div>
+      <div class="product-grid">
+        <div class="product-card">
+          <div>
+            <span class="badge-warranty">Garantía 30 días</span>[span_79](start_span)[span_79](end_span)
+            <div class="product-title">iPhone 11 Swap (128 GB)</div>
+            <div class="product-price">Contado: Gs 2.190.000[span_80](start_span)[span_80](end_span)</div>
+            <div class="product-details">
+              <strong>Cuotas:</strong> 6x 634.518 | 12x 377.252 | 24x 221.332 | 36x 146.073[span_81](start_span)[span_81](end_span)<br>
+              <strong>Combo 2x1:</strong> 12x 596.847 | 24x 358.347[span_82](start_span)[span_82](end_span)
+            </div>
+          </div>
+          <a href="https://wa.me/595971826300?text=Hola,%20me%20interesa%20el%20iPhone%2011%20Swap" class="btn-whatsapp" target="_blank">Consultar</a>
+        </div>
+
+        <div class="product-card">
+          <div>
+            <span class="badge-warranty">Garantía 30 días</span>[span_83](start_span)[span_83](end_span)
+            <div class="product-title">iPhone 11 Pro Swap (256 GB)</div>
+            <div class="product-price">Contado: Gs 2.690.000[span_84](start_span)[span_84](end_span)</div>
+            <div class="product-details">
+              <strong>Cuotas:</strong> 6x 697.970 | 12x 411.036 | 24x 242.411 | 36x 160.441[span_85](start_span)[span_85](end_span)<br>
+              <strong>Combo 2x1:</strong> 12x 658.784 | 24x 396.993[span_86](start_span)[span_86](end_span)
+            </div>
+          </div>
+          <a href="https://wa.me/595971826300?text=Hola,%20me%20interesa%20el%20iPhone%2011%20Pro%20Swap" class="btn-whatsapp" target="_blank">Consultar</a>
+        </div>
+
+        <div class="product-card">
+          <div>
+            <span class="badge-warranty">Garantía 30 días</span>[span_87](start_span)[span_87](end_span)
+            <div class="product-title">iPhone 13 Swap (256 GB)</div>
+            <div class="product-price">Contado: Gs 2.680.000[span_88](start_span)[span_88](end_span)</div>
+            <div class="product-details">
+              <strong>Cuotas:</strong> 6x 867.174 | 12x 501.126 | 24x 298.623 | 36x 198.755[span_89](start_span)[span_89](end_span)<br>
+              <strong>Combo 2x1:</strong> 12x 827.703 | 24x 502.389[span_90](start_span)[span_90](end_span)
+            </div>
+          </div>
+          <a href="https://wa.me/595971826300?text=Hola,%20me%20interesa%20el%20iPhone%2013%20Swap" class="btn-whatsapp" target="_blank">Consultar</a>
+        </div>
+
+        <div class="product-card">
+          <div>
+            <span class="badge-warranty">Garantía 30 días</span>[span_91](start_span)[span_91](end_span)
+            <div class="product-title">iPhone 13 Pro Max Swap (256 GB)</div>
+            <div class="product-price">Contado: Gs 3.690.000[span_92](start_span)[span_92](end_span)</div>
+            <div class="product-details">
+              <strong>Cuotas:</strong> 6x 1.036.379 | 12x 591.216 | 24x 354.834 | 36x 237.069[span_93](start_span)[span_93](end_span)<br>
+              <strong>Combo 2x1:</strong> 12x 1.052.928 | 24x 642.917[span_94](start_span)[span_94](end_span)
+            </div>
+          </div>
+          <a href="https://wa.me/595971826300?text=Hola,%20me%20interesa%20el%20iPhone%2013%20Pro%20Max%20Swap" class="btn-whatsapp" target="_blank">Consultar</a>
+        </div>
+
+        <div class="product-card">
+          <div>
+            <span class="badge-warranty">Garantía 3 meses</span>[span_95](start_span)[span_95](end_span)
+            <div class="product-title">iPhone 14 Nuevo (128 GB)</div>
+            <div class="product-price">Contado: Gs 4.660.000[span_96](start_span)[span_96](end_span)</div>
+            <div class="product-details">
+              <strong>Cuotas:</strong> 6x 1.269.036 | 12x 715.090 | 18x 519.794 | 24x 432.125 | 36x 289.751[span_97](start_span)[span_97](end_span)
+            </div>
+          </div>
+          <a href="https://wa.me/595971826300?text=Hola,%20me%20interesa%20el%20iPhone%2014%20Nuevo" class="btn-whatsapp" target="_blank">Consultar</a>
+        </div>
+
+        <div class="product-card">
+          <div>
+            <span class="badge-warranty">Garantía 30 días</span>[span_98](start_span)[span_98](end_span)
+            <div class="product-title">iPhone 14 Pro Swap (128 GB)</div>
+            <div class="product-price">Contado: Gs 4.340.000[span_99](start_span)[span_99](end_span)</div>
+            <div class="product-details">
+              <strong>Cuotas:</strong> 6x 1.163.283 | 12x 658.784 | 18x 478.210 | 24x 396.993 | 36x 265.805[span_100](start_span)[span_100](end_span)
+            </div>
+          </div>
+          <a href="https://wa.me/595971826300?text=Hola,%20me%20interesa%20el%20iPhone%2014%20Pro%20Swap" class="btn-whatsapp" target="_blank">Consultar</a>
+        </div>
+
+        <div class="product-card">
+          <div>
+            <span class="badge-warranty">Garantía 30 días</span>[span_101](start_span)[span_101](end_span)
+            <div class="product-title">iPhone 14 Pro Max Swap (128 GB)</div>
+            <div class="product-price">Contado: Gs 4.340.000[span_102](start_span)[span_102](end_span)</div>
+            <div class="product-details">
+              <strong>Cuotas:</strong> 6x 1.142.132 | 12x 647.523 | 18x 469.894 | 24x 389.966 | 36x 261.015[span_103](start_span)[span_103](end_span)
+            </div>
+          </div>
+          <a href="https://wa.me/595971826300?text=Hola,%20me%20interesa%20el%20iPhone%2014%20Pro%20Max%20Swap" class="btn-whatsapp" target="_blank">Consultar</a>
+        </div>
+
+        <div class="product-card">
+          <div>
+            <span class="badge-warranty">Garantía 30 días</span>[span_104](start_span)[span_104](end_span)
+            <div class="product-title">iPhone 15 Swap (128 GB)</div>
+            <div class="product-price">Contado: Gs 4.680.000[span_105](start_span)[span_105](end_span)</div>
+            <div class="product-details">
+              <strong>Cuotas:</strong> 6x 1.269.036 | 12x 715.090 | 18x 519.794 | 24x 432.125 | 36x 289.751[span_106](start_span)[span_106](end_span)
+            </div>
+          </div>
+          <a href="https://wa.me/595971826300?text=Hola,%20me%20interesa%20el%20iPhone%2015%20Swap" class="btn-whatsapp" target="_blank">Consultar</a>
+        </div>
+
+        <div class="product-card">
+          <div>
+            <span class="badge-warranty">Garantía 30 días</span>[span_107](start_span)[span_107](end_span)
+            <div class="product-title">iPhone 15 Pro Swap (128 GB)</div>
+            <div class="product-price">Contado: Gs 4.680.000[span_108](start_span)[span_108](end_span)</div>
+            <div class="product-details">
+              <strong>Cuotas:</strong> 6x 1.269.036 | 12x 715.090 | 18x 519.794 | 24x 432.125 | 36x 289.751[span_109](start_span)[span_109](end_span)
+            </div>
+          </div>
+          <a href="https://wa.me/595971826300?text=Hola,%20me%20interesa%20el%20iPhone%2015%20Pro%20Swap" class="btn-whatsapp" target="_blank">Consultar</a>
+        </div>
+
+        <div class="product-card">
+          <div>
+            <span class="badge-warranty">Garantía 30 días</span>[span_110](start_span)[span_110](end_span)
+            <div class="product-title">iPhone 16 Swap (128 GB)</div>
+            <div class="product-price">Contado: Gs 5.260.000[span_111](start_span)[span_111](end_span)</div>
+            <div class="product-details">
+              <strong>Cuotas:</strong> 6x 1.459.391 | 12x 816.441 | 18x 594.644 | 24x 495.363 | 36x 332.854[span_112](start_span)[span_112](end_span)
+            </div>
+          </div>
+          <a href="https://wa.me/595971826300?text=Hola,%20me%20interesa%20el%20iPhone%2016%20Swap" class="btn-whatsapp" target="_blank">Consultar</a>
+        </div>
+
+        <div class="product-card">
+          <div>
+            <span class="badge-warranty">Garantía 30 días</span>[span_113](start_span)[span_113](end_span)
+            <div class="product-title">iPhone 16 Pro Swap (128 GB)</div>
+            <div class="product-price">Contado: Gs 6.160.000[span_114](start_span)[span_114](end_span)</div>
+            <div class="product-details">
+              <strong>Cuotas:</strong> 6x 1.522.843 | 12x 850.225 | 18x 619.594 | 24x 516.442 | 36x 347.222[span_115](start_span)[span_115](end_span)
+            </div>
+          </div>
+          <a href="https://wa.me/595971826300?text=Hola,%20me%20interesa%20el%20iPhone%2016%20Pro%20Swap" class="btn-whatsapp" target="_blank">Consultar</a>
+        </div>
+
+        <div class="product-card">
+          <div>
+            <span class="badge-warranty">Garantía 30 días</span>[span_116](start_span)[span_116](end_span)
+            <div class="product-title">iPhone 16 Pro Max Swap (256 GB)</div>
+            <div class="product-price">Contado: Gs 7.120.000[span_117](start_span)[span_117](end_span)</div>
+            <div class="product-details">
+              <strong>Cuotas:</strong> 6x 1.734.349 | 12x 962.838 | 18x 702.761 | 24x 586.706 | 36x 395.115[span_118](start_span)[span_118](end_span)
+            </div>
+          </div>
+          <a href="https://wa.me/595971826300?text=Hola,%20me%20interesa%20el%20iPhone%2016%20Pro%20Max%20Swap" class="btn-whatsapp" target="_blank">Consultar</a>
+        </div>
+
+        <div class="product-card">
+          <div>
+            <span class="badge-warranty">Garantía 3 meses</span>[span_119](start_span)[span_119](end_span)
+            <div class="product-title">iPhone 17 Nuevo (256 GB)</div>
+            <div class="product-price">Contado: Gs 6.780.000[span_120](start_span)[span_120](end_span)</div>
+            <div class="product-details">
+              <strong>Cuotas:</strong> 6x 1.586.294 | 12x 884.009 | 18x 644.544 | 24x 537.521 | 36x 361.590[span_121](start_span)[span_121](end_span)
+            </div>
+          </div>
+          <a href="https://wa.me/595971826300?text=Hola,%20me%20interesa%20el%20iPhone%2017%20Nuevo" class="btn-whatsapp" target="_blank">Consultar</a>
+        </div>
+
+        <div class="product-card">
+          <div>
+            <span class="badge-warranty">Garantía 3 meses</span>[span_122](start_span)[span_122](end_span)
+            <div class="product-title">iPhone 17 Pro Nuevo (256 GB)</div>
+            <div class="product-price">Contado: Gs 8.340.000[span_123](start_span)[span_123](end_span)</div>
+            <div class="product-details">
+              <strong>Cuotas:</strong> 6x 2.009.306 | 12x 1.109.234 | 18x 810.878 | 24x 678.049 | 36x 457.375[span_124](start_span)[span_124](end_span)
+            </div>
+          </div>
+          <a href="https://wa.me/595971826300?text=Hola,%20me%20interesa%20el%20iPhone%2017%20Pro%20Nuevo" class="btn-whatsapp" target="_blank">Consultar</a>
+        </div>
+
+        <div class="product-card">
+          <div>
+            <span class="badge-warranty">Garantía 3 meses</span>[span_125](start_span)[span_125](end_span)
+            <div class="product-title">iPhone 17 Pro Max (256 GB)</div>
+            <div class="product-price">Contado: Gs 9.490.000[span_126](start_span)[span_126](end_span)</div>
+            <div class="product-details">
+              <strong>Cuotas:</strong> 6x 2.195.431 | 12x 1.208.333 | 18x 884.065 | 24x 739.882 | 36x 499.000[span_127](start_span)[span_127](end_span)
+            </div>
+          </div>
+          <a href="https://wa.me/595971826300?text=Hola,%20me%20interesa%20el%20iPhone%2017%20Pro%20Max" class="btn-whatsapp" target="_blank">Consultar</a>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- SECCIÓN 2: NOTEBOOK -->
+    <section id="notebook" class="section-content">
+      <div class="placeholder-text">
+        <h2>Sección Notebooks</h2>
+        <p>Próximamente actualizaremos los equipos disponibles para financiación en cuotas.</p>
+      </div>
+    </section>
+
+    <!-- SECCIÓN 3: HOGAR -->
+    <section id="hogar" class="section-content">
+      <div class="placeholder-text">
+        <h2>Artículos para el Hogar</h2>
+        <p>Electrodomésticos y tecnología para el hogar sin entrega inicial.</p>
+      </div>
+    </section>
+
+    <!-- SECCIÓN 4: PARLANTES -->
+    <section id="parlantes" class="section-content">
+      <div class="placeholder-text">
+        <h2>Audio y Parlantes</h2>
+        <p>Equipos de sonido, torres de audio y parlantes portátiles en cuotas.</p>
+      </div>
+    </section>
+
+    <!-- SECCIÓN 5: TRABAJA CON NOSOTROS -->
+    <section id="trabaja" class="section-content">
+      <div class="info-card">
+        <h2>¡Súmate a Nuestro Equipo!</h2>
+        <p>Estamos buscando personas motivadas para incorporarse a las ventas de nuestros productos y servicios. Ofrecemos asesoramiento completo sobre la modalidad de trabajo, comisiones y herramientas que necesitas para empezar.</p>
+        <a href="https://wa.me/595971826300?text=Hola,%20quisiera%20recibir%20asesor%C3%ADa%20sobre%20la%20secci%C3%B3n%20Trabaja%20con%20Nosotros" class="btn-whatsapp" target="_blank">Asesorarme sobre el Trabajo</a>
+      </div>
+    </section>
+
+    <!-- SECCIÓN 6: GANA COMO AFILIADO -->
+    <section id="afiliados" class="section-content">
+      <div class="info-card">
+        <h2>Programa de Afiliados</h2>
+        <p>Genera ingresos extra recomendando nuestro catálogo. Gana comisiones por cada cliente que concrete su compra a través de tus gestiones. Haz clic abajo para darte la asesoría de cómo funciona el sistema de afiliados.</p>
+        <a href="https://wa.me/595971826300?text=Hola,%20quiero%20recibir%20asesor%C3%ADa%20para%20Gana%20como%20Afiliado" class="btn-whatsapp" target="_blank">Quiero ser Afiliado</a>
+      </div>
+    </section>
+
+  </div>
+
+  <script>
+    function switchCategory(sectionId, element) {
+      // Ocultar todas las secciones
+      const sections = document.querySelectorAll('.section-content');
+      sections.forEach(section => section.classList.remove('active'));
+
+      // Desactivar botones de navegación
+      const buttons = document.querySelectorAll('.btn-category');
+      buttons.forEach(button => button.classList.remove('active'));
+
+      // Mostrar la sección correspondiente
+      document.getElementById(sectionId).classList.add('active');
+      
+      // Resaltar el botón activo
+      element.classList.add('active');
     }
-  }
-
-  function cerrarAdmin() {
-    document.getElementById('adminPanel').style.display = 'none';
-  }
-
-  function guardarProducto(e) {
-    e.preventDefault();
-    const productos = obtenerProductos();
-
-    let imagenFinal = imagenBase64Cargada || document.getElementById('pImagen').value;
-
-    if (!imagenFinal) {
-      alert("Por favor, sube un archivo de imagen o ingresa una URL.");
-      return;
-    }
-
-    const nuevoProducto = {
-      id: Date.now(),
-      categoria: document.getElementById('pCategoria').value,
-      nombre: document.getElementById('pNombre').value,
-      imagen: imagenFinal,
-      descripcion: document.getElementById('pDesc').value,
-      cuotas: {
-        c12: document.getElementById('pC12').value,
-        c24: document.getElementById('pC24').value,
-        c36: document.getElementById('pC36').value
-      }
-    };
-
-    productos.push(nuevoProducto);
-    guardarProductosEnStorage(productos);
-    
-    alert("¡Producto publicado exitosamente!");
-    document.getElementById('productForm').reset();
-    imagenBase64Cargada = "";
-    filtrarProductos();
-  }
-
-  function eliminarProducto(id) {
-    if (confirm("¿Eliminar este producto del catálogo?")) {
-      let productos = obtenerProductos();
-      productos = productos.filter(p => p.id !== id);
-      guardarProductosEnStorage(productos);
-      filtrarProductos();
-    }
-  }
-
-  function cargarVisitas() {
-    let visitasLocales = parseInt(localStorage.getItem('visitas_app') || '124');
-    visitasLocales += 1;
-    localStorage.setItem('visitas_app', visitasLocales);
-    document.getElementById('visitCount').innerText = visitasLocales.toLocaleString();
-  }
-
-  let deferredPrompt;
-  window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault();
-    deferredPrompt = e;
-  });
-
-  function instalarApp() {
-    if (deferredPrompt) {
-      deferredPrompt.prompt();
-    } else {
-      alert('Para instalar la App:\n1. Toca el menú de tu navegador (3 puntos).\n2. Elige "Agregar a la pantalla principal".');
-    }
-  }
-
-  cargarVisitas();
-  filtrarProductos();
-</script>
-
+  </script>
 </body>
 </html>
