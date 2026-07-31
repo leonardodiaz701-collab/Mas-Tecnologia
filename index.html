@@ -137,7 +137,12 @@
       gap: 8px;
       margin-bottom: 15px;
       flex-wrap: wrap;
+      overflow-x: auto;
+      padding-bottom: 5px;
+      scrollbar-width: none;
     }
+    
+    .filter-bar::-webkit-scrollbar { display: none; }
 
     .search-input {
       flex: 1;
@@ -159,6 +164,7 @@
       font-size: 0.8rem;
       cursor: pointer;
       font-weight: 600;
+      white-space: nowrap;
     }
 
     .category-btn.active {
@@ -326,6 +332,44 @@
       line-height: 1.4;
       border-top: 1px dashed var(--card-border);
     }
+
+    /* ESTILOS PARA DOCUMENTOS Y CATÁLOGO EMBEBIDO */
+    .catalog-viewer-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 15px;
+      margin-bottom: 15px;
+    }
+
+    .doc-frame {
+      width: 100%;
+      height: 500px;
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      background: #ffffff;
+      margin-top: 10px;
+    }
+
+    .action-banner {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 40px 20px;
+      text-align: center;
+      margin: 20px 0;
+    }
+
+    .action-banner h2 {
+      color: var(--accent);
+      margin-top: 0;
+    }
+
+    .action-banner p {
+      color: var(--subtext);
+      font-size: 0.95rem;
+      margin-bottom: 20px;
+    }
   </style>
 </head>
 <body>
@@ -356,53 +400,70 @@
 
   <div id="adminPanel">
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-      <h2 style="font-size: 1rem; margin: 0; color: var(--accent);">Cargar Nuevo Producto</h2>
+      <h2 style="font-size: 1rem; margin: 0; color: var(--accent);">Gestión / Cargar Nuevo Contenido</h2>
       <button onclick="cerrarAdmin()" style="background: var(--danger); color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer;">Cerrar</button>
     </div>
 
     <form id="productForm" onsubmit="guardarProducto(event)">
       <div class="form-group">
         <label>Categoría:</label>
-        <select id="pCategoria" required>
+        <select id="pCategoria" required onchange="toggleTipoFormulario(this.value)">
           <option value="celulares">Celulares</option>
+          <option value="notebooks">Notebooks</option>
+          <option value="parlantes">Parlantes</option>
           <option value="electro">Electrodomésticos</option>
           <option value="varios">Varios</option>
+          <option value="catalogo">Catálogo Interactivo (PDF / HTML)</option>
         </select>
       </div>
 
       <div class="form-group">
-        <label>Marca y Modelo:</label>
-        <input type="text" id="pNombre" placeholder="Ej: iPhone 17 Pro" required>
+        <label id="lblNombre">Marca y Modelo / Título del Catálogo:</label>
+        <input type="text" id="pNombre" placeholder="Ej: iPhone 17 Pro / Catálogo de Ofertas PDF" required>
       </div>
 
-      <!-- OPCIONES MÚLTIPLES DE IMAGEN -->
-      <div class="form-group">
-        <label>Subir Varias Imágenes (Selecciona 1 o varias):</label>
-        <input type="file" id="pImagenFile" accept="image/*" multiple onchange="convertirImagenesABase64(event)">
+      <!-- OPCIONES DE DOCUMENTO PDF/HTML -->
+      <div id="secDocInputs" style="display: none; background: #080d09; padding: 10px; border-radius: 8px; border: 1px dashed var(--accent); margin-bottom: 10px;">
+        <div class="form-group">
+          <label>Subir Archivo PDF o HTML:</label>
+          <input type="file" id="pDocFile" accept=".pdf, .html, .htm" onchange="convertirDocABase64(event)">
+        </div>
+        <div class="form-group">
+          <label>O Enlace/URL directo al PDF o Web HTML:</label>
+          <input type="url" id="pDocUrl" placeholder="https://ejemplo.com/catalogo.pdf">
+        </div>
+      </div>
+
+      <!-- OPCIONES MÚLTIPLES DE IMAGEN PARA PRODUCTOS -->
+      <div id="secImgInputs">
+        <div class="form-group">
+          <label>Subir Varias Imágenes (Selecciona 1 o varias):</label>
+          <input type="file" id="pImagenFile" accept="image/*" multiple onchange="convertirImagenesABase64(event)">
+        </div>
+
+        <div class="form-group">
+          <label>O ingresar URLs (separadas por coma):</label>
+          <input type="text" id="pImagen" placeholder="https://img1.jpg, https://img2.jpg">
+        </div>
       </div>
 
       <div class="form-group">
-        <label>O ingresar URLs (separadas por coma):</label>
-        <input type="text" id="pImagen" placeholder="https://img1.jpg, https://img2.jpg">
-      </div>
-
-      <div class="form-group">
-        <label>Especificaciones:</label>
+        <label>Especificaciones / Descripción:</label>
         <textarea id="pDesc" rows="2" placeholder="Ej: Memoria de 256GB, Cámara triple..." required></textarea>
       </div>
 
-      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px;">
+      <div id="secCuotas" style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px;">
         <div class="form-group">
           <label>12 Cuotas:</label>
-          <input type="text" id="pC12" placeholder="1.109.000" required>
+          <input type="text" id="pC12" placeholder="1.109.000">
         </div>
         <div class="form-group">
           <label>24 Cuotas:</label>
-          <input type="text" id="pC24" placeholder="678.000" required>
+          <input type="text" id="pC24" placeholder="678.000">
         </div>
         <div class="form-group">
           <label>36 Cuotas:</label>
-          <input type="text" id="pC36" placeholder="457.000" required>
+          <input type="text" id="pC36" placeholder="457.000">
         </div>
       </div>
 
@@ -411,11 +472,16 @@
   </div>
 
   <div class="filter-bar">
-    <input type="text" id="searchInput" class="search-input" placeholder="Buscar modelo o marca..." onkeyup="filtrarProductos()">
+    <input type="text" id="searchInput" class="search-input" placeholder="Buscar modelo, marca o categoría..." onkeyup="filtrarProductos()">
     <button class="category-btn active" onclick="filtrarCategoria('todos', this)">Todos</button>
+    <button class="category-btn" onclick="filtrarCategoria('catalogo', this)">📂 Catálogos PDF/HTML</button>
     <button class="category-btn" onclick="filtrarCategoria('celulares', this)">Celulares</button>
+    <button class="category-btn" onclick="filtrarCategoria('notebooks', this)">Notebooks</button>
+    <button class="category-btn" onclick="filtrarCategoria('parlantes', this)">Parlantes</button>
     <button class="category-btn" onclick="filtrarCategoria('electro', this)">Electrodomésticos</button>
     <button class="category-btn" onclick="filtrarCategoria('varios', this)">Varios</button>
+    <button class="category-btn" onclick="filtrarCategoria('trabaja', this)">💼 Trabaja con Nosotros</button>
+    <button class="category-btn" onclick="filtrarCategoria('afiliados', this)">💰 Gana como Afiliado</button>
   </div>
 
   <div class="grid" id="productGrid"></div>
@@ -431,6 +497,7 @@
   const ADMIN_PASS = "admin123";
   let modoAdminActivado = false;
   let imagenesBase64Cargadas = [];
+  let docBase64Cargado = "";
 
   const productosBase = [
     {
@@ -452,6 +519,18 @@
     localStorage.setItem('tecnologia_py_productos_v3', JSON.stringify(lista));
   }
 
+  function toggleTipoFormulario(val) {
+    if (val === 'catalogo') {
+      document.getElementById('secDocInputs').style.display = 'block';
+      document.getElementById('secImgInputs').style.display = 'none';
+      document.getElementById('secCuotas').style.display = 'none';
+    } else {
+      document.getElementById('secDocInputs').style.display = 'none';
+      document.getElementById('secImgInputs').style.display = 'block';
+      document.getElementById('secCuotas').style.display = 'grid';
+    }
+  }
+
   function convertirImagenesABase64(event) {
     const files = Array.from(event.target.files);
     imagenesBase64Cargadas = [];
@@ -467,22 +546,81 @@
     });
   }
 
+  function convertirDocABase64(event) {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        docBase64Cargado = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+  }
+
   let categoriaActual = 'todos';
 
   function renderizarProductos(lista) {
     const grid = document.getElementById('productGrid');
     grid.innerHTML = '';
 
+    // Mención y secciones estáticas especiales
+    if (categoriaActual === 'trabaja') {
+      grid.innerHTML = `
+        <div class="action-banner" style="grid-column: 1/-1;">
+          <h2>💼 Trabaja con Nosotros</h2>
+          <p>Súmate a nuestro equipo comercial de ventas de tecnología e insumos a cuotas. ¡Genera ingresos excelentes!</p>
+          <a href="https://wa.me/${MI_WHATSAPP}?text=${encodeURIComponent('Hola +Tecnologia-Py, quisiera recibir información sobre cómo trabajar con ustedes.')}" target="_blank" class="btn-whatsapp-large btn-whatsapp">
+            📲 Recibir información por WhatsApp
+          </a>
+        </div>
+      `;
+      return;
+    }
+
+    if (categoriaActual === 'afiliados') {
+      grid.innerHTML = `
+        <div class="action-banner" style="grid-column: 1/-1;">
+          <h2>💰 Gana como Afiliado</h2>
+          <p>Refiere a tus amigos o clientes interesados en adquirir productos tecnológicos a cuotas y gana comisiones por cada venta aprobada.</p>
+          <a href="https://wa.me/${MI_WHATSAPP}?text=${encodeURIComponent('Hola +Tecnologia-Py, quisiera recibir información para ganar dinero como Afiliado.')}" target="_blank" class="btn-whatsapp-large btn-whatsapp">
+            📲 Solicitar Plan de Afiliados
+          </a>
+        </div>
+      `;
+      return;
+    }
+
     if (lista.length === 0) {
-      grid.innerHTML = '<p style="color:var(--subtext); text-align:center; grid-column:1/-1;">No hay productos disponibles.</p>';
+      grid.innerHTML = '<p style="color:var(--subtext); text-align:center; grid-column:1/-1;">No hay contenido disponible en esta sección.</p>';
       return;
     }
 
     lista.forEach(p => {
+      let botonBorrar = modoAdminActivado ? `<button class="btn-delete" onclick="eliminarProducto(${p.id})">🗑️ Eliminar</button>` : '';
+
+      // Si es un documento o catálogo embebible
+      if (p.categoria === 'catalogo' || p.docSrc) {
+        const docUrl = p.docSrc;
+        grid.innerHTML += `
+          <div class="catalog-viewer-card" style="grid-column: 1/-1;">
+            <h3 class="product-title">${p.nombre}</h3>
+            <p class="product-desc">${p.descripcion}</p>
+            <iframe class="doc-frame" src="${docUrl}"></iframe>
+            <div style="margin-top: 10px; display:flex; gap:10px;">
+              <a href="${docUrl}" target="_blank" class="btn-whatsapp" style="background:var(--card-border); color:white;">
+                🔍 Abrir en Pantalla Completa
+              </a>
+            </div>
+            ${botonBorrar}
+          </div>
+        `;
+        return;
+      }
+
+      // De lo contrario, render de tarjetas estándar de productos
       const msg = encodeURIComponent(`Hola +Tecnologia-Py, estoy interesado en solicitar el *${p.nombre}* a cuotas (Sin Entrega Inicial). ¿Cuáles son los requisitos?`);
       const linkWa = `https://wa.me/${MI_WHATSAPP}?text=${msg}`;
 
-      // Normalizar arreglo de imágenes (Soporta productos viejos y nuevos)
       let fotos = p.imagenes || (p.imagen ? [p.imagen] : ["https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400"]);
 
       let slidesHTML = fotos.map(img => `
@@ -493,7 +631,16 @@
 
       let badgeHTML = fotos.length > 1 ? `<div class="carousel-badge">↔ Desliza (${fotos.length} fotos)</div>` : '';
 
-      let botonBorrar = modoAdminActivado ? `<button class="btn-delete" onclick="eliminarProducto(${p.id})">🗑️ Eliminar Producto</button>` : '';
+      let tablaCuotasHTML = '';
+      if (p.cuotas && (p.cuotas.c12 || p.cuotas.c24 || p.cuotas.c36)) {
+        tablaCuotasHTML = `
+          <div class="pricing-table">
+            ${p.cuotas.c12 ? `<div class="price-row"><span>12 Cuotas:</span> <b>${p.cuotas.c12}</b></div>` : ''}
+            ${p.cuotas.c24 ? `<div class="price-row"><span>24 Cuotas:</span> <b>${p.cuotas.c24}</b></div>` : ''}
+            ${p.cuotas.c36 ? `<div class="price-row"><span>36 Cuotas:</span> <b>${p.cuotas.c36}</b></div>` : ''}
+          </div>
+        `;
+      }
 
       grid.innerHTML += `
         <div class="product-card">
@@ -508,11 +655,7 @@
             <h3 class="product-title">${p.nombre}</h3>
             <p class="product-desc">${p.descripcion}</p>
             
-            <div class="pricing-table">
-              <div class="price-row"><span>12 Cuotas:</span> <b>${p.cuotas.c12}</b></div>
-              <div class="price-row"><span>24 Cuotas:</span> <b>${p.cuotas.c24}</b></div>
-              <div class="price-row"><span>36 Cuotas:</span> <b>${p.cuotas.c36}</b></div>
-            </div>
+            ${tablaCuotasHTML}
           </div>
 
           <a href="${linkWa}" target="_blank" class="btn-whatsapp">
@@ -529,7 +672,7 @@
     const productos = obtenerProductos();
     const filtrados = productos.filter(p => {
       const coincideCat = categoriaActual === 'todos' || p.categoria === categoriaActual;
-      const coincideTexto = p.nombre.toLowerCase().includes(query) || p.descripcion.toLowerCase().includes(query);
+      const coincideTexto = p.nombre.toLowerCase().includes(query) || (p.descripcion && p.descripcion.toLowerCase().includes(query));
       return coincideCat && coincideTexto;
     });
     renderizarProductos(filtrados);
@@ -564,47 +707,58 @@
   function guardarProducto(e) {
     e.preventDefault();
     const productos = obtenerProductos();
+    const cat = document.getElementById('pCategoria').value;
 
-    let fotosFinales = [];
-
-    if (imagenesBase64Cargadas.length > 0) {
-      fotosFinales = imagenesBase64Cargadas;
-    } else {
-      const urlValue = document.getElementById('pImagen').value;
-      if (urlValue.trim() !== '') {
-        fotosFinales = urlValue.split(',').map(u => u.trim());
-      }
-    }
-
-    if (fotosFinales.length === 0) {
-      alert("Por favor, sube al menos una imagen desde tu dispositivo o ingresa una URL.");
-      return;
-    }
-
-    const nuevoProducto = {
+    let nuevoItem = {
       id: Date.now(),
-      categoria: document.getElementById('pCategoria').value,
+      categoria: cat,
       nombre: document.getElementById('pNombre').value,
-      imagenes: fotosFinales,
-      descripcion: document.getElementById('pDesc').value,
-      cuotas: {
+      descripcion: document.getElementById('pDesc').value
+    };
+
+    if (cat === 'catalogo') {
+      let srcDoc = docBase64Cargado || document.getElementById('pDocUrl').value;
+      if (!srcDoc) {
+        alert("Por favor, sube un archivo (PDF/HTML) o pega una URL directa.");
+        return;
+      }
+      nuevoItem.docSrc = srcDoc;
+    } else {
+      let fotosFinales = [];
+      if (imagenesBase64Cargadas.length > 0) {
+        fotosFinales = imagenesBase64Cargadas;
+      } else {
+        const urlValue = document.getElementById('pImagen').value;
+        if (urlValue.trim() !== '') {
+          fotosFinales = urlValue.split(',').map(u => u.trim());
+        }
+      }
+
+      if (fotosFinales.length === 0) {
+        alert("Por favor, sube al menos una imagen desde tu dispositivo o ingresa una URL.");
+        return;
+      }
+
+      nuevoItem.imagenes = fotosFinales;
+      nuevoItem.cuotas = {
         c12: document.getElementById('pC12').value,
         c24: document.getElementById('pC24').value,
         c36: document.getElementById('pC36').value
-      }
-    };
+      };
+    }
 
-    productos.push(nuevoProducto);
+    productos.push(nuevoItem);
     guardarProductosEnStorage(productos);
     
-    alert("¡Producto publicado exitosamente!");
+    alert("¡Publicación guardada con éxito!");
     document.getElementById('productForm').reset();
     imagenesBase64Cargadas = [];
+    docBase64Cargado = "";
     filtrarProductos();
   }
 
   function eliminarProducto(id) {
-    if (confirm("¿Eliminar este producto del catálogo?")) {
+    if (confirm("¿Eliminar esta publicación?")) {
       let productos = obtenerProductos();
       productos = productos.filter(p => p.id !== id);
       guardarProductosEnStorage(productos);
@@ -613,7 +767,7 @@
   }
 
   function cargarVisitas() {
-    let visitasLocales = parseInt(localStorage.getItem('visitas_app') || '132');
+    let visitasLocales = parseInt(localStorage.getItem('visitas_app') || '134');
     visitasLocales += 1;
     localStorage.setItem('visitas_app', visitasLocales);
     document.getElementById('visitCount').innerText = visitasLocales.toLocaleString();
