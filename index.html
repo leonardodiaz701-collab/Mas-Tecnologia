@@ -3,343 +3,639 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Catálogo Móvil & Servicios</title>
+  <title>+Tecnologia-Py | Catálogo de Créditos</title>
+  
+  <!-- Configuración PWA e Icono Directo -->
+  <meta name="theme-color" content="#a3e635">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="+Tecnologia-Py">
+
+  <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/2586/2586488.png">
+  <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2586/2586488.png">
+
   <style>
     :root {
-      --primary: #25d366;
-      --dark: #121212;
-      --card-bg: #1e1e1e;
-      --text: #ffffff;
-      --text-secondary: #a0a0a0;
-      --accent: #007bff;
+      --bg: #090d0a;
+      --card-bg: #121a14;
+      --card-border: #243628;
+      --accent: #a3e635; /* Verde Limón */
+      --accent-hover: #84cc16;
+      --text: #f8fafc;
+      --subtext: #94a3b8;
+      --danger: #ef4444;
     }
+
+    * { box-sizing: border-box; font-family: system-ui, -apple-system, sans-serif; }
 
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: var(--dark);
-      color: var(--text);
       margin: 0;
       padding: 0;
+      background-color: var(--bg);
+      color: var(--text);
+      padding-bottom: 40px;
     }
 
-    header {
-      background-color: var(--card-bg);
-      padding: 15px 20px;
-      text-align: center;
-      border-bottom: 1px solid #333;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
-
-    header h1 {
-      margin: 0;
-      font-size: 1.2rem;
+    .ticker-wrap {
+      background: #84cc16;
+      color: #000;
+      font-weight: 900;
+      font-size: 0.82rem;
+      padding: 8px 0;
+      overflow: hidden;
+      white-space: nowrap;
       text-transform: uppercase;
       letter-spacing: 1px;
     }
 
-    header p {
-      margin: 5px 0 0;
-      font-size: 0.85rem;
-      color: var(--primary);
-    }
-
-    /* Categorías - Scroll horizontal */
-    .nav-categories {
-      display: flex;
-      overflow-x: auto;
-      background-color: #181818;
-      padding: 10px;
-      gap: 10px;
-      border-bottom: 1px solid #2a2a2a;
-      scrollbar-width: none;
-    }
-
-    .nav-categories::-webkit-scrollbar {
-      display: none;
-    }
-
-    .btn-category {
-      background-color: #2a2a2a;
-      color: var(--text);
-      border: none;
-      padding: 8px 16px;
-      border-radius: 20px;
-      white-space: nowrap;
-      cursor: pointer;
-      font-size: 0.9rem;
-      transition: all 0.3s ease;
-    }
-
-    .btn-category.active, .btn-category:hover {
-      background-color: var(--primary);
-      color: #000;
-      font-weight: bold;
-    }
-
-    .container {
-      padding: 20px;
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-
-    .section-content {
-      display: none;
-    }
-
-    .section-content.active {
-      display: block;
-    }
-
-    /* Cards para la información comercial */
-    .info-card {
-      background-color: var(--card-bg);
-      border-radius: 12px;
-      padding: 25px;
-      text-align: center;
-      margin-top: 10px;
-      border: 1px solid #333;
-    }
-
-    .info-card h2 {
-      color: var(--primary);
-      margin-top: 0;
-    }
-
-    .info-card p {
-      color: var(--text-secondary);
-      line-height: 1.6;
-      margin-bottom: 20px;
-    }
-
-    .btn-whatsapp {
+    .ticker-move {
       display: inline-block;
-      background-color: var(--primary);
-      color: #000;
-      text-decoration: none;
+      animation: ticker 15s linear infinite;
+    }
+
+    @keyframes ticker {
+      0% { transform: translate3d(100%, 0, 0); }
+      100% { transform: translate3d(-100%, 0, 0); }
+    }
+
+    header {
+      background: var(--card-bg);
+      border-bottom: 1px solid var(--card-border);
+      padding: 10px 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .brand-svg {
+      width: 26px;
+      height: 26px;
+      fill: var(--accent);
+    }
+
+    .brand h1 {
+      font-size: 1.1rem;
+      margin: 0;
+      color: var(--accent);
+      font-weight: 800;
+    }
+
+    .visit-badge {
+      background: #17241a;
+      border: 1px solid var(--accent);
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      color: var(--accent);
       font-weight: bold;
-      padding: 12px 24px;
-      border-radius: 25px;
-      font-size: 1rem;
-      transition: transform 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 5px;
     }
 
-    .btn-whatsapp:hover {
-      transform: scale(1.05);
+    .header-actions {
+      display: flex;
+      gap: 6px;
     }
 
-    /* Grid de Productos */
-    .product-grid {
+    .btn-action {
+      background: var(--card-border);
+      color: white;
+      border: 1px solid var(--accent);
+      padding: 6px 10px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .btn-install {
+      background: var(--accent);
+      color: #000;
+      border: none;
+    }
+
+    .wrap {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 15px;
+    }
+
+    .filter-bar {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 15px;
+      flex-wrap: wrap;
+    }
+
+    .search-input {
+      flex: 1;
+      min-width: 100%;
+      padding: 12px 15px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      color: white;
+      font-size: 0.9rem;
+    }
+
+    .category-btn {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      color: var(--subtext);
+      padding: 8px 12px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    .category-btn.active {
+      background: var(--accent);
+      color: #000;
+      font-weight: bold;
+      border-color: var(--accent);
+    }
+
+    .grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 20px;
+      gap: 15px;
     }
 
     .product-card {
-      background-color: var(--card-bg);
-      border-radius: 10px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
       padding: 15px;
-      border: 1px solid #2a2a2a;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
     }
 
+    /* CARRUSEL DE IMÁGENES */
+    .carousel-container {
+      position: relative;
+      width: 100%;
+      height: 220px;
+      background: #080d09;
+      border-radius: 8px;
+      margin-bottom: 10px;
+      overflow: hidden;
+    }
+
+    .carousel-track {
+      display: flex;
+      width: 100%;
+      height: 100%;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: none;
+    }
+
+    .carousel-track::-webkit-scrollbar {
+      display: none;
+    }
+
+    .carousel-slide {
+      min-width: 100%;
+      height: 100%;
+      scroll-snap-align: start;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .carousel-slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      padding: 5px;
+    }
+
+    .carousel-badge {
+      position: absolute;
+      bottom: 8px;
+      right: 8px;
+      background: rgba(0, 0, 0, 0.7);
+      color: var(--accent);
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 0.7rem;
+      font-weight: bold;
+      border: 1px solid var(--accent);
+    }
+
     .product-title {
       font-size: 1.1rem;
-      font-weight: bold;
-      margin-bottom: 5px;
+      margin: 0 0 5px 0;
+      color: white;
+      font-weight: 700;
     }
 
-    .product-price {
-      color: var(--primary);
-      font-size: 1rem;
-      font-weight: bold;
-      margin-bottom: 10px;
+    .product-desc {
+      font-size: 0.8rem;
+      color: var(--subtext);
+      margin-bottom: 12px;
     }
 
-    .product-details {
+    .pricing-table {
+      background: #17241a;
+      border-radius: 8px;
+      padding: 10px;
+      margin-bottom: 12px;
+      border: 1px solid #283d2c;
+    }
+
+    .price-row {
+      display: flex;
+      justify-content: space-between;
       font-size: 0.85rem;
-      color: var(--text-secondary);
-      margin-bottom: 15px;
+      padding: 4px 0;
     }
 
-    .product-details ul {
-      list-style: none;
-      padding: 0;
-      margin: 0;
+    .price-row b {
+      color: var(--accent);
     }
 
-    .product-details li {
-      margin-bottom: 3px;
+    .btn-whatsapp {
+      background: var(--accent);
+      color: #000;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      padding: 12px;
+      width: 100%;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      font-size: 0.9rem;
     }
 
-    .placeholder-text {
+    .btn-delete {
+      background: var(--danger);
+      color: white;
+      border: none;
+      padding: 6px;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      margin-top: 8px;
+      width: 100%;
+    }
+
+    #adminPanel {
+      display: none;
+      background: var(--card-bg);
+      border: 1px solid var(--accent);
+      border-radius: 12px;
+      padding: 15px;
+      margin-bottom: 20px;
+    }
+
+    .form-group { margin-bottom: 10px; }
+    .form-group label { display: block; font-size: 0.8rem; color: var(--subtext); margin-bottom: 4px; }
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%; padding: 8px; background: #090d0a; border: 1px solid var(--card-border); border-radius: 6px; color: white;
+    }
+
+    .btn-submit {
+      background: var(--accent); color: #000; font-weight: bold; border: none; padding: 10px; width: 100%; border-radius: 6px; cursor: pointer;
+    }
+
+    .disclaimer {
       text-align: center;
-      color: var(--text-secondary);
-      padding: 40px 0;
+      font-size: 0.72rem;
+      color: #64748b;
+      margin-top: 25px;
+      padding: 10px;
+      line-height: 1.4;
+      border-top: 1px dashed var(--card-border);
     }
   </style>
 </head>
 <body>
 
-  <header>
-    <h1>Catálogo de Productos</h1>
-    <p>Contacto: (0971) 826 300 | Sin Entrega Inicial</p>
-  </header>
+<div class="ticker-wrap">
+  <div class="ticker-move">
+    🔥 ¡SOLICÍTALO SIN ENTREGA INICIAL! • MÍNIMOS REQUISITOS • EVALUACIÓN RÁPIDA POR WHATSAPP 🔥
+  </div>
+</div>
 
-  <!-- Navegación de Categorías -->
-  <nav class="nav-categories">
-    <button class="btn-category active" onclick="switchCategory('catalogo', this)">Catálogo</button>
-    <button class="btn-category" onclick="switchCategory('notebook', this)">Notebook</button>
-    <button class="btn-category" onclick="switchCategory('hogar', this)">Hogar</button>
-    <button class="btn-category" onclick="switchCategory('parlantes', this)">Parlantes</button>
-    <button class="btn-category" onclick="switchCategory('trabaja', this)">Trabaja con Nosotros</button>
-    <button class="btn-category" onclick="switchCategory('afiliados', this)">Gana como Afiliado</button>
-  </nav>
-
-  <div class="container">
-
-    <!-- SECCIÓN 1: CATÁLOGO PRINCIPAL (CELULARES) -->
-    <section id="catalogo" class="section-content active">
-      <div class="product-grid">
-
-        <!-- Samsung A07 -->
-        <div class="product-card">
-          <div>
-            <div class="product-title">Samsung Galaxy A07 (128 GB)</div>
-            <div class="product-price">Contado: Gs 937.000[span_0](start_span)[span_0](end_span)</div>
-            <div class="product-details">
-              <strong>Cuotas individuales:</strong>
-              <ul>
-                <li>6x Gs 367.386 | 12x Gs 235.023[span_1](start_span)[span_1](end_span)</li>
-                <li>18x Gs 165.253 | 24x Gs 132.589[span_2](start_span)[span_2](end_span)</li>
-                <li>36x Gs 85.584[span_3](start_span)[span_3](end_span)</li>
-              </ul>
-              <br>
-              <strong>Combo 2x1:</strong>
-              <ul>
-                <li>12x Gs 318.131 | 24x Gs 184.444[span_4](start_span)[span_4](end_span)</li>
-              </ul>
-            </div>
-          </div>
-          <a href="https://wa.me/595971826300?text=Hola,%20me%20interesa%20el%20Samsung%20Galaxy%20A07" class="btn-whatsapp" target="_blank">Consultar</a>
-        </div>
-
-        <!-- Samsung A16 -->
-        <div class="product-card">
-          <div>
-            <div class="product-title">Samsung Galaxy A16 (128 GB)</div>
-            <div class="product-price">Contado: Gs 1.190.000[span_5](start_span)[span_5](end_span)</div>
-            <div class="product-details">
-              <strong>Cuotas individuales:</strong>
-              <ul>
-                <li>6x Gs 399.746 | 12x Gs 252.252[span_6](start_span)[span_6](end_span)</li>
-                <li>18x Gs 177.977 | 24x Gs 143.339[span_7](start_span)[span_7](end_span)</li>
-                <li>36x Gs 92.912[span_8](start_span)[span_8](end_span)</li>
-              </ul>
-            </div>
-          </div>
-          <a href="https://wa.me/595971826300?text=Hola,%20me%20interesa%20el%20Samsung%20Galaxy%20A16" class="btn-whatsapp" target="_blank">Consultar</a>
-        </div>
-
-        <!-- Xiaomi Note 15 -->
-        <div class="product-card">
-          <div>
-            <div class="product-title">Xiaomi Note 15 (256 GB)</div>
-            <div class="product-price">Contado: Gs 1.590.000[span_9](start_span)[span_9](end_span)</div>
-            <div class="product-details">
-              <strong>Cuotas individuales:</strong>
-              <ul>
-                <li>6x Gs 486.464 | 12x Gs 298.423[span_10](start_span)[span_10](end_span)</li>
-                <li>18x Gs 212.076 | 24x Gs 172.147[span_11](start_span)[span_11](end_span)</li>
-              </ul>
-            </div>
-          </div>
-          <a href="https://wa.me/595971826300?text=Hola,%20me%20interesa%20el%20Xiaomi%20Note%2015" class="btn-whatsapp" target="_blank">Consultar</a>
-        </div>
-
-        <!-- iPhone 13 Swap -->
-        <div class="product-card">
-          <div>
-            <div class="product-title">iPhone 13 Swap (256 GB)</div>
-            <div class="product-price">Contado: Gs 2.680.000[span_12](start_span)[span_12](end_span)</div>
-            <div class="product-details">
-              <strong>Garantía:</strong> 30 días[span_13](start_span)[span_13](end_span)<br>
-              <strong>Cuotas individuales:</strong>
-              <ul>
-                <li>12x Gs 501.126 | 24x Gs 298.623[span_14](start_span)[span_14](end_span)</li>
-                <li>36x Gs 198.755[span_15](start_span)[span_15](end_span)</li>
-              </ul>
-            </div>
-          </div>
-          <a href="https://wa.me/595971826300?text=Hola,%20me%20interesa%20el%20iPhone%2013%20Swap" class="btn-whatsapp" target="_blank">Consultar</a>
-        </div>
-
-      </div>
-    </section>
-
-    <!-- SECCIÓN 2: NOTEBOOK -->
-    <section id="notebook" class="section-content">
-      <div class="placeholder-text">
-        <h2>Sección Notebooks</h2>
-        <p>Próximamente actualizaremos los equipos e itinerarios disponibles en cuotas.</p>
-      </div>
-    </section>
-
-    <!-- SECCIÓN 3: HOGAR -->
-    <section id="hogar" class="section-content">
-      <div class="placeholder-text">
-        <h2>Artículos para el Hogar</h2>
-        <p>Electrodomésticos y tecnología para la casa sin entrega inicial.</p>
-      </div>
-    </section>
-
-    <!-- SECCIÓN 4: PARLANTES -->
-    <section id="parlantes" class="section-content">
-      <div class="placeholder-text">
-        <h2>Audio y Parlantes</h2>
-        <p>Equipos de sonido, torres e inalámbricos disponibles en cuotas.</p>
-      </div>
-    </section>
-
-    <!-- SECCIÓN 5: TRABAJA CON NOSOTROS -->
-    <section id="trabaja" class="section-content">
-      <div class="info-card">
-        <h2>¡Súmate a Nuestro Equipo!</h2>
-        <p>Estamos buscando personas motivadas para incorporarse a las ventas de nuestros productos y servicios. Ofrecemos asesoramiento completo sobre la modalidad de trabajo, comisiones y herramientas que necesitas para empezar.</p>
-        <a href="https://wa.me/595971826300?text=Hola,%20quisiera%20recibir%20asesor%C3%ADa%20sobre%20la%20secci%C3%B3n%20Trabaja%20con%20Nosotros" class="btn-whatsapp" target="_blank">Asesorarme sobre el Trabajo</a>
-      </div>
-    </section>
-
-    <!-- SECCIÓN 6: GANA COMO AFILIADO -->
-    <section id="afiliados" class="section-content">
-      <div class="info-card">
-        <h2>Programa de Afiliados</h2>
-        <p>Genera ingresos extra recomendando nuestro catálogo. Gana comisiones por cada cliente que concrete su compra a través de tus gestiones. Haz clic abajo para darte la asesoría de cómo funciona el sistema de afiliados.</p>
-        <a href="https://wa.me/595971826300?text=Hola,%20quiero%20recibir%20asesor%C3%ADa%20para%20Gana%20como%20Afiliado" class="btn-whatsapp" target="_blank">Quiero ser Afiliado</a>
-      </div>
-    </section>
-
+<header>
+  <div class="brand">
+    <svg class="brand-svg" viewBox="0 0 24 24"><path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z"/></svg>
+    <h1>+Tecnologia-Py</h1>
   </div>
 
-  <script>
-    function switchCategory(sectionId, element) {
-      // Ocultar todas las secciones
-      const sections = document.querySelectorAll('.section-content');
-      sections.forEach(section => section.classList.remove('active'));
+  <div class="visit-badge">
+    👁️ <span id="visitCount">...</span> vistas
+  </div>
 
-      // Desactivar botones de la barra
-      const buttons = document.querySelectorAll('.btn-category');
-      buttons.forEach(button => button.classList.remove('active'));
+  <div class="header-actions">
+    <button class="btn-action" onclick="toggleAdmin()">⚙️ Admin</button>
+    <button class="btn-action btn-install" onclick="instalarApp()">📱 Descargar</button>
+  </div>
+</header>
 
-      // Activar la sección elegida
-      document.getElementById(sectionId).classList.add('active');
-      
-      // Resaltar botón presionado
-      element.classList.add('active');
+<div class="wrap">
+
+  <div id="adminPanel">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+      <h2 style="font-size: 1rem; margin: 0; color: var(--accent);">Cargar Nuevo Producto</h2>
+      <button onclick="cerrarAdmin()" style="background: var(--danger); color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer;">Cerrar</button>
+    </div>
+
+    <form id="productForm" onsubmit="guardarProducto(event)">
+      <div class="form-group">
+        <label>Categoría:</label>
+        <select id="pCategoria" required>
+          <option value="celulares">Celulares</option>
+          <option value="electro">Electrodomésticos</option>
+          <option value="varios">Varios</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Marca y Modelo:</label>
+        <input type="text" id="pNombre" placeholder="Ej: iPhone 17 Pro" required>
+      </div>
+
+      <!-- OPCIONES MÚLTIPLES DE IMAGEN -->
+      <div class="form-group">
+        <label>Subir Varias Imágenes (Selecciona 1 o varias):</label>
+        <input type="file" id="pImagenFile" accept="image/*" multiple onchange="convertirImagenesABase64(event)">
+      </div>
+
+      <div class="form-group">
+        <label>O ingresar URLs (separadas por coma):</label>
+        <input type="text" id="pImagen" placeholder="https://img1.jpg, https://img2.jpg">
+      </div>
+
+      <div class="form-group">
+        <label>Especificaciones:</label>
+        <textarea id="pDesc" rows="2" placeholder="Ej: Memoria de 256GB, Cámara triple..." required></textarea>
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px;">
+        <div class="form-group">
+          <label>12 Cuotas:</label>
+          <input type="text" id="pC12" placeholder="1.109.000" required>
+        </div>
+        <div class="form-group">
+          <label>24 Cuotas:</label>
+          <input type="text" id="pC24" placeholder="678.000" required>
+        </div>
+        <div class="form-group">
+          <label>36 Cuotas:</label>
+          <input type="text" id="pC36" placeholder="457.000" required>
+        </div>
+      </div>
+
+      <button type="submit" class="btn-submit">Publicar en Catálogo</button>
+    </form>
+  </div>
+
+  <div class="filter-bar">
+    <input type="text" id="searchInput" class="search-input" placeholder="Buscar modelo o marca..." onkeyup="filtrarProductos()">
+    <button class="category-btn active" onclick="filtrarCategoria('todos', this)">Todos</button>
+    <button class="category-btn" onclick="filtrarCategoria('celulares', this)">Celulares</button>
+    <button class="category-btn" onclick="filtrarCategoria('electro', this)">Electrodomésticos</button>
+    <button class="category-btn" onclick="filtrarCategoria('varios', this)">Varios</button>
+  </div>
+
+  <div class="grid" id="productGrid"></div>
+
+  <div class="disclaimer">
+    * Todos los productos y cuotas están sujetos a análisis de crédito y modificaciones de precios según la entidad financiera.
+  </div>
+
+</div>
+
+<script>
+  const MI_WHATSAPP = "595971826300";
+  const ADMIN_PASS = "admin123";
+  let modoAdminActivado = false;
+  let imagenesBase64Cargadas = [];
+
+  const productosBase = [
+    {
+      id: 1,
+      categoria: "celulares",
+      nombre: "Samsung Galaxy A06 (64GB)",
+      imagenes: ["https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=400"],
+      descripcion: "Pantalla 6.7 HD+, Procesador Octa-Core, Cámara 50MP, Batería 5000mAh.",
+      cuotas: { c12: "165.541 Gs.", c24: "99.775 Gs.", c36: "63.000 Gs." }
     }
-  </script>
+  ];
+
+  function obtenerProductos() {
+    const almacenados = localStorage.getItem('tecnologia_py_productos_v3');
+    return almacenados ? JSON.parse(almacenados) : productosBase;
+  }
+
+  function guardarProductosEnStorage(lista) {
+    localStorage.setItem('tecnologia_py_productos_v3', JSON.stringify(lista));
+  }
+
+  function convertirImagenesABase64(event) {
+    const files = Array.from(event.target.files);
+    imagenesBase64Cargadas = [];
+    
+    let procesadas = 0;
+    files.forEach(file => {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        imagenesBase64Cargadas.push(e.target.result);
+        procesadas++;
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  let categoriaActual = 'todos';
+
+  function renderizarProductos(lista) {
+    const grid = document.getElementById('productGrid');
+    grid.innerHTML = '';
+
+    if (lista.length === 0) {
+      grid.innerHTML = '<p style="color:var(--subtext); text-align:center; grid-column:1/-1;">No hay productos disponibles.</p>';
+      return;
+    }
+
+    lista.forEach(p => {
+      const msg = encodeURIComponent(`Hola +Tecnologia-Py, estoy interesado en solicitar el *${p.nombre}* a cuotas (Sin Entrega Inicial). ¿Cuáles son los requisitos?`);
+      const linkWa = `https://wa.me/${MI_WHATSAPP}?text=${msg}`;
+
+      // Normalizar arreglo de imágenes (Soporta productos viejos y nuevos)
+      let fotos = p.imagenes || (p.imagen ? [p.imagen] : ["https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400"]);
+
+      let slidesHTML = fotos.map(img => `
+        <div class="carousel-slide">
+          <img src="${img}" alt="${p.nombre}" onerror="this.src='https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400'">
+        </div>
+      `).join('');
+
+      let badgeHTML = fotos.length > 1 ? `<div class="carousel-badge">↔ Desliza (${fotos.length} fotos)</div>` : '';
+
+      let botonBorrar = modoAdminActivado ? `<button class="btn-delete" onclick="eliminarProducto(${p.id})">🗑️ Eliminar Producto</button>` : '';
+
+      grid.innerHTML += `
+        <div class="product-card">
+          <div>
+            <div class="carousel-container">
+              <div class="carousel-track">
+                ${slidesHTML}
+              </div>
+              ${badgeHTML}
+            </div>
+
+            <h3 class="product-title">${p.nombre}</h3>
+            <p class="product-desc">${p.descripcion}</p>
+            
+            <div class="pricing-table">
+              <div class="price-row"><span>12 Cuotas:</span> <b>${p.cuotas.c12}</b></div>
+              <div class="price-row"><span>24 Cuotas:</span> <b>${p.cuotas.c24}</b></div>
+              <div class="price-row"><span>36 Cuotas:</span> <b>${p.cuotas.c36}</b></div>
+            </div>
+          </div>
+
+          <a href="${linkWa}" target="_blank" class="btn-whatsapp">
+            📲 Solicitar por WhatsApp
+          </a>
+          ${botonBorrar}
+        </div>
+      `;
+    });
+  }
+
+  function filtrarProductos() {
+    const query = document.getElementById('searchInput').value.toLowerCase();
+    const productos = obtenerProductos();
+    const filtrados = productos.filter(p => {
+      const coincideCat = categoriaActual === 'todos' || p.categoria === categoriaActual;
+      const coincideTexto = p.nombre.toLowerCase().includes(query) || p.descripcion.toLowerCase().includes(query);
+      return coincideCat && coincideTexto;
+    });
+    renderizarProductos(filtrados);
+  }
+
+  function filtrarCategoria(cat, btn) {
+    categoriaActual = cat;
+    document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    filtrarProductos();
+  }
+
+  function toggleAdmin() {
+    if (!modoAdminActivado) {
+      const pass = prompt("Contraseña de Administrador:");
+      if (pass === ADMIN_PASS) {
+        modoAdminActivado = true;
+        document.getElementById('adminPanel').style.display = 'block';
+        filtrarProductos();
+      } else if (pass !== null) {
+        alert("Contraseña incorrecta.");
+      }
+    } else {
+      document.getElementById('adminPanel').style.display = 'block';
+    }
+  }
+
+  function cerrarAdmin() {
+    document.getElementById('adminPanel').style.display = 'none';
+  }
+
+  function guardarProducto(e) {
+    e.preventDefault();
+    const productos = obtenerProductos();
+
+    let fotosFinales = [];
+
+    if (imagenesBase64Cargadas.length > 0) {
+      fotosFinales = imagenesBase64Cargadas;
+    } else {
+      const urlValue = document.getElementById('pImagen').value;
+      if (urlValue.trim() !== '') {
+        fotosFinales = urlValue.split(',').map(u => u.trim());
+      }
+    }
+
+    if (fotosFinales.length === 0) {
+      alert("Por favor, sube al menos una imagen desde tu dispositivo o ingresa una URL.");
+      return;
+    }
+
+    const nuevoProducto = {
+      id: Date.now(),
+      categoria: document.getElementById('pCategoria').value,
+      nombre: document.getElementById('pNombre').value,
+      imagenes: fotosFinales,
+      descripcion: document.getElementById('pDesc').value,
+      cuotas: {
+        c12: document.getElementById('pC12').value,
+        c24: document.getElementById('pC24').value,
+        c36: document.getElementById('pC36').value
+      }
+    };
+
+    productos.push(nuevoProducto);
+    guardarProductosEnStorage(productos);
+    
+    alert("¡Producto publicado exitosamente!");
+    document.getElementById('productForm').reset();
+    imagenesBase64Cargadas = [];
+    filtrarProductos();
+  }
+
+  function eliminarProducto(id) {
+    if (confirm("¿Eliminar este producto del catálogo?")) {
+      let productos = obtenerProductos();
+      productos = productos.filter(p => p.id !== id);
+      guardarProductosEnStorage(productos);
+      filtrarProductos();
+    }
+  }
+
+  function cargarVisitas() {
+    let visitasLocales = parseInt(localStorage.getItem('visitas_app') || '132');
+    visitasLocales += 1;
+    localStorage.setItem('visitas_app', visitasLocales);
+    document.getElementById('visitCount').innerText = visitasLocales.toLocaleString();
+  }
+
+  let deferredPrompt;
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+  });
+
+  function instalarApp() {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+    } else {
+      alert('Para instalar la App:\n1. Toca el menú de tu navegador (3 puntos).\n2. Elige "Agregar a la pantalla principal".');
+    }
+  }
+
+  cargarVisitas();
+  filtrarProductos();
+</script>
+
 </body>
 </html>
