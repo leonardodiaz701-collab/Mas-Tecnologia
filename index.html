@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>+Tecnologia-Py</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --bg-main: #0a0f0d;
+            --bg-card: #121915;
+            --bg-input: #1a241f;
+            --accent: #86efac;
+            --accent-green: #22c55e;
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --border: #27372d;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
+        body { background-color: var(--bg-main); color: var(--text-main); padding-bottom: 80px; }
+
+        .ticker-bar {
+            background: linear-gradient(90deg, #15803d, #22c55e, #15803d);
+            color: #000; font-weight: 700; font-size: 0.82rem; padding: 8px; text-align: center;
+        }
+
+        header {
+            padding: 14px 16px; display: flex; align-items: center; justify-content: space-between;
+            background-color: var(--bg-card); border-bottom: 1px solid var(--border);
+            position: sticky; top: 0; z-index: 100;
+        }
+
+        .logo-text { font-size: 1.3rem; font-weight: 800; color: var(--accent); }
+
+        .btn-header {
+            background: var(--bg-input); border: 1px solid var(--accent-green);
+            color: var(--accent); padding: 6px 12px; border-radius: 8px; font-size: 0.85rem;
+            font-weight: 600; cursor: pointer;
+        }
+
+        .controls-section { padding: 16px; display: flex; flex-direction: column; gap: 12px; }
+        .search-box input {
+            width: 100%; padding: 12px 14px; background: var(--bg-input);
+            border: 1px solid var(--border); border-radius: 12px; color: #fff; font-size: 0.9rem;
+        }
+
+        .categories-scroll { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; }
+        .cat-chip {
+            background: var(--bg-input); border: 1px solid var(--border); color: var(--text-muted);
+            padding: 8px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; cursor: pointer;
+            white-space: nowrap;
+        }
+        .cat-chip.active { background: var(--accent-green); color: #000; border-color: var(--accent-green); }
+
+        .products-grid { padding: 0 16px; display: flex; flex-direction: column; gap: 16px; }
+        .product-card {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 16px; overflow: hidden; position: relative;
+        }
+
+        .card-img-container {
+            width: 100%; height: 250px; background: #000; position: relative; overflow: hidden;
+        }
+        .card-img-slider { display: flex; width: 100%; height: 100%; transition: transform 0.3s ease-in-out; }
+        .card-img-slider img { width: 100%; height: 100%; object-fit: contain; flex-shrink: 0; }
+
+        .slider-btn {
+            position: absolute; top: 50%; transform: translateY(-50%);
+            background: rgba(0,0,0,0.6); color: white; border: none; width: 32px; height: 32px;
+            border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 5;
+        }
+        .slider-btn.prev { left: 8px; }
+        .slider-btn.next { right: 8px; }
+
+        .dots-indicator {
+            position: absolute; bottom: 8px; left: 50%; transform: translateX(-50%);
+            display: flex; gap: 6px; z-index: 5; background: rgba(0,0,0,0.5); padding: 4px 8px; border-radius: 10px;
+        }
+        .dot { width: 7px; height: 7px; border-radius: 50%; background: rgba(255,255,255,0.4); }
+        .dot.active { background: var(--accent-green); width: 14px; border-radius: 4px; }
+
+        .card-body { padding: 16px; }
+        .product-title { font-size: 1.15rem; font-weight: 700; color: #fff; margin-bottom: 6px; }
+        .product-desc { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px; }
+
+        .pricing-box {
+            background: var(--bg-input); border-radius: 12px; padding: 10px 14px; margin-bottom: 14px;
+        }
+        .price-row { display: flex; justify-content: space-between; padding: 4px 0; font-size: 0.88rem; }
+        .price-label { color: var(--text-muted); }
+        .price-val { font-weight: 700; color: var(--accent); }
+
+        .btn-whatsapp {
+            width: 100%; background: var(--accent-green); color: #000; border: none; padding: 12px;
+            border-radius: 10px; font-weight: 700; font-size: 0.95rem; cursor: pointer; display: flex;
+            align-items: center; justify-content: center; gap: 8px; text-decoration: none;
+        }
+
+        .admin-card-actions { display: flex; gap: 8px; margin-top: 10px; }
+        .btn-edit { flex: 1; background: var(--warning); color: #000; border: none; padding: 8px; border-radius: 8px; font-weight: 700; cursor: pointer; }
+        .btn-delete { flex: 1; background: var(--danger); color: #fff; border: none; padding: 8px; border-radius: 8px; font-weight: 700; cursor: pointer; }
+
+        .modal-overlay {
+            position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.85);
+            z-index: 1000; display: none; align-items: center; justify-content: center; padding: 16px;
+        }
+        .modal-overlay.active { display: flex; }
+        .modal-content {
+            background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px;
+            width: 100%; max-width: 480px; max-height: 90vh; overflow-y: auto; padding: 20px;
+        }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+        .modal-title { font-size: 1.1rem; font-weight: 700; color: var(--accent); }
+
+        .form-group { margin-bottom: 12px; }
+        .form-group label { display: block; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 4px; }
+        .form-control {
+            width: 100%; padding: 10px; background: var(--bg-input); border: 1px solid var(--border);
+            border-radius: 8px; color: #fff; font-size: 0.88rem; outline: none;
+        }
+
+        .file-upload-box {
+            border: 2px dashed var(--border); border-radius: 10px; padding: 16px; text-align: center;
+            background: var(--bg-input); cursor: pointer; margin-top: 6px;
+        }
+        .preview-thumbs { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+        .thumb-wrapper { position: relative; width: 65px; height: 65px; border-radius: 8px; overflow: hidden; }
+        .thumb-wrapper img { width: 100%; height: 100%; object-fit: cover; }
+        .thumb-remove {
+            position: absolute; top: 2px; right: 2px; background: var(--danger); color: #fff;
+            border: none; border-radius: 50%; width: 18px; height: 18px; font-size: 0.7rem; cursor: pointer;
+        }
+
+        .btn-submit {
+            width: 100%; background: var(--accent-green); color: #000; border: none; padding: 12px;
+            border-radius: 10px; font-weight: 700; font-size: 0.95rem; cursor: pointer; margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="ticker-bar">
+        🔥 ¡SOLICÍTALO SIN ENTREGA INICIAL! • MÍNIMOS REQUISITOS • EVALUACIÓN RÁPIDA 🔥
+    </div>
+
+    <header>
+        <div style="display:flex; align-items:center; gap:8px;">
+            <i class="fa-solid fa-mobile-screen-button" style="color:var(--accent-green); font-size:1.4rem;"></i>
+            <span class="logo-text">+Tecnologia-Py</span>
+        </div>
+        <button class="btn-header" onclick="toggleAdminMode()">
+            <span id="adminBtnText">Admin</span>
+        </button>
+    </header>
+
+    <div class="controls-section">
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Buscar modelo, notebook, marca..." oninput="renderizarProductos()">
+        </div>
+        <div class="categories-scroll">
+            <button class="cat-chip active" onclick="filtrarCategoria('Todos', this)">Todos</button>
+            <button class="cat-chip" onclick="filtrarCategoria('Celulares', this)">Celulares</button>
+            <button class="cat-chip" onclick="filtrarCategoria('Notebooks', this)">Notebooks</button>
+            <button class="cat-chip" onclick="filtrarCategoria('Electrodomésticos', this)">Electrodomésticos</button>
+            <button class="cat-chip" onclick="filtrarCategoria('Varios', this)">Varios</button>
+        </div>
+        <button id="btnAddProductNav" class="btn-submit" style="display:none; background: var(--bg-input); border: 1px dashed var(--accent-green); color: var(--accent);" onclick="abrirModalAgregar()">
+            <i class="fa-solid fa-plus-circle"></i> Agregar Nuevo Producto
+        </button>
+    </div>
+
+    <main class="products-grid" id="productsGrid"></main>
+
+    <!-- Modal Admin -->
+    <div class="modal-overlay" id="productModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalTitle">Agregar Producto</h3>
+                <button style="background:none; border:none; color:#fff; font-size:1.4rem;" onclick="cerrarModal()">&times;</button>
+            </div>
+            <form id="productForm" onsubmit="guardarProducto(event)">
+                <input type="hidden" id="prodId">
+                <div class="form-group">
+                    <label>Nombre / Modelo</label>
+                    <input type="text" id="prodNombre" class="form-control" placeholder="Ej: Notebook HP Core i5" required>
+                </div>
+                <div class="form-group">
+                    <label>Categoría</label>
+                    <select id="prodCategoria" class="form-control" required>
+                        <option value="Celulares">Celulares</option>
+                        <option value="Notebooks">Notebooks</option>
+                        <option value="Electrodomésticos">Electrodomésticos</option>
+                        <option value="Varios">Varios</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Descripción</label>
+                    <textarea id="prodDesc" class="form-control" rows="2" placeholder="Ej: 8GB RAM, SSD 512GB" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Cuota 12 Meses (Gs.)</label>
+                    <input type="text" id="prodCuota12" class="form-control" placeholder="Ej: 165.541" required>
+                </div>
+                <div class="form-group">
+                    <label>Cuota 24 Meses (Gs.)</label>
+                    <input type="text" id="prodCuota24" class="form-control" placeholder="Ej: 99.775" required>
+                </div>
+                <div class="form-group">
+                    <label>Cuota 36 Meses (Gs.)</label>
+                    <input type="text" id="prodCuota36" class="form-control" placeholder="Ej: 63.000" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Fotos del Producto</label>
+                    <div class="file-upload-box" onclick="document.getElementById('fileInput').click()">
+                        <i class="fa-solid fa-camera" style="font-size:1.8rem; color:var(--accent-green);"></i>
+                        <p style="font-size:0.85rem; margin-top:4px;">Toca aquí para elegir fotos de tu galería</p>
+                    </div>
+                    <input type="file" id="fileInput" multiple accept="image/*" style="display:none" onchange="procesarImagenesLocales(event)">
+                    <div class="preview-thumbs" id="previewContainer"></div>
+                </div>
+
+                <button type="submit" class="btn-submit">Guardar Producto</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const NUMERO_WHATSAPP = "595981000000"; // Cambiar por tu número real
+
+        let productos = JSON.parse(localStorage.getItem('tecnologia_py_prods')) || [
+            {
+                id: "1",
+                nombre: "Samsung Galaxy A06 (64GB)",
+                categoria: "Celulares",
+                descripcion: "Pantalla 6.7 HD+, Procesador Octa-Core, Batería 5000mAh.",
+                cuota12: "165.541", cuota24: "99.775", cuota36: "63.000",
+                imagenes: ["https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?auto=format&fit=crop&w=600&q=80"]
+            }
+        ];
+
+        let imagenesTemporales = [];
+        let modoAdmin = false;
+        let categoriaActual = 'Todos';
+
+        function renderizarProductos() {
+            const grid = document.getElementById('productsGrid');
+            grid.innerHTML = '';
+            const busqueda = document.getElementById('searchInput').value.toLowerCase();
+
+            const filtrados = productos.filter(p => {
+                const matchCat = (categoriaActual === 'Todos' || p.categoria === categoriaActual);
+                const matchSearch = p.nombre.toLowerCase().includes(busqueda) || p.descripcion.toLowerCase().includes(busqueda);
+                return matchCat && matchSearch;
+            });
+
+            filtrados.forEach(prod => {
+                const imgs = prod.imagenes && prod.imagenes.length > 0 ? prod.imagenes : ['https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=600&q=80'];
+
+                let sliderImgs = '';
+                imgs.forEach(i => sliderImgs += `<img src="${i}">`);
+
+                let dots = '';
+                if(imgs.length > 1) {
+                    imgs.forEach((_, idx) => dots += `<div class="dot ${idx === 0 ? 'active' : ''}" id="dot-${prod.id}-${idx}"></div>`);
+                }
+
+                const navBtns = imgs.length > 1 ? `
+                    <button class="slider-btn prev" onclick="moverSlider('${prod.id}', -1, ${imgs.length})"><i class="fa-solid fa-chevron-left"></i></button>
+                    <button class="slider-btn next" onclick="moverSlider('${prod.id}', 1, ${imgs.length})"><i class="fa-solid fa-chevron-right"></i></button>
+                ` : '';
+
+                const adminBtns = modoAdmin ? `
+                    <div class="admin-card-actions">
+                        <button class="btn-edit" onclick="editarProducto('${prod.id}')"><i class="fa-solid fa-pen"></i> Modificar</button>
+                        <button class="btn-delete" onclick="eliminarProducto('${prod.id}')"><i class="fa-solid fa-trash"></i> Eliminar</button>
+                    </div>
+                ` : '';
+
+                const textWA = encodeURIComponent(`¡Hola! Me interesa solicitar el *${prod.nombre}*. Quisiera información sobre la financiación.`);
+
+                grid.innerHTML += `
+                    <article class="product-card">
+                        <div class="card-img-container">
+                            <div class="card-img-slider" id="slider-${prod.id}" data-index="0">
+                                ${sliderImgs}
+                            </div>
+                            ${navBtns}
+                            <div class="dots-indicator">${dots}</div>
+                        </div>
+                        <div class="card-body">
+                            <h2 class="product-title">${prod.nombre}</h2>
+                            <p class="product-desc">${prod.descripcion}</p>
+                            <div class="pricing-box">
+                                <div class="price-row"><span class="price-label">12 Cuotas:</span><span class="price-val">${prod.cuota12} Gs.</span></div>
+                                <div class="price-row"><span class="price-label">24 Cuotas:</span><span class="price-val">${prod.cuota24} Gs.</span></div>
+                                <div class="price-row"><span class="price-label">36 Cuotas:</span><span class="price-val">${prod.cuota36} Gs.</span></div>
+                            </div>
+                            <a href="https://wa.me/${NUMERO_WHATSAPP}?text=${textWA}" target="_blank" style="text-decoration:none;">
+                                <button class="btn-whatsapp"><i class="fa-brands fa-whatsapp"></i> Solicitar por WhatsApp</button>
+                            </a>
+                            ${adminBtns}
+                        </div>
+                    </article>
+                `;
+            });
+        }
+
+        function moverSlider(prodId, dir, total) {
+            const slider = document.getElementById(`slider-${prodId}`);
+            let idx = parseInt(slider.getAttribute('data-index')) || 0;
+            idx = (idx + dir + total) % total;
+            slider.setAttribute('data-index', idx);
+            slider.style.transform = `translateX(-${idx * 100}%)`;
+
+            for(let i=0; i<total; i++) {
+                const dot = document.getElementById(`dot-${prodId}-${i}`);
+                if(dot) dot.className = `dot ${i === idx ? 'active' : ''}`;
+            }
+        }
+
+        function procesarImagenesLocales(e) {
+            const files = Array.from(e.target.files);
+            files.forEach(file => {
+                const reader = new FileReader();
+                reader.onload = function(evt) {
+                    const img = new Image();
+                    img.src = evt.target.result;
+                    img.onload = function() {
+                        const canvas = document.createElement('canvas');
+                        const ctx = canvas.getContext('2d');
+                        const maxW = 800;
+                        let w = img.width, h = img.height;
+                        if(w > maxW) { h = Math.round((h * maxW) / w); w = maxW; }
+                        canvas.width = w; canvas.height = h;
+                        ctx.drawImage(img, 0, 0, w, h);
+                        imagenesTemporales.push(canvas.toDataURL('image/jpeg', 0.7));
+                        renderPrevis();
+                    }
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+
+        function renderPrevis() {
+            const container = document.getElementById('previewContainer');
+            container.innerHTML = '';
+            imagenesTemporales.forEach((img, idx) => {
+                container.innerHTML += `
+                    <div class="thumb-wrapper">
+                        <img src="${img}">
+                        <button type="button" class="thumb-remove" onclick="quitarImg(${idx})">&times;</button>
+                    </div>
+                `;
+            });
+        }
+
+        function quitarImg(idx) {
+            imagenesTemporales.splice(idx, 1);
+            renderPrevis();
+        }
+
+        function abrirModalAgregar() {
+            document.getElementById('modalTitle').innerText = 'Agregar Nuevo Producto';
+            document.getElementById('prodId').value = '';
+            document.getElementById('productForm').reset();
+            imagenesTemporales = [];
+            renderPrevis();
+            document.getElementById('productModal').classList.add('active');
+        }
+
+        function editarProducto(id) {
+            const p = productos.find(item => item.id === id);
+            if(!p) return;
+            document.getElementById('modalTitle').innerText = 'Modificar Producto';
+            document.getElementById('prodId').value = p.id;
+            document.getElementById('prodNombre').value = p.nombre;
+            document.getElementById('prodCategoria').value = p.categoria;
+            document.getElementById('prodDesc').value = p.descripcion;
+            document.getElementById('prodCuota12').value = p.cuota12;
+            document.getElementById('prodCuota24').value = p.cuota24;
+            document.getElementById('prodCuota36').value = p.cuota36;
+            imagenesTemporales = p.imagenes ? [...p.imagenes] : [];
+            renderPrevis();
+            document.getElementById('productModal').classList.add('active');
+        }
+
+        function cerrarModal() {
+            document.getElementById('productModal').classList.remove('active');
+        }
+
+        function guardarProducto(e) {
+            e.preventDefault();
+            const id = document.getElementById('prodId').value;
+
+            const prodData = {
+                id: id || Date.now().toString(),
+                nombre: document.getElementById('prodNombre').value,
+                categoria: document.getElementById('prodCategoria').value,
+                descripcion: document.getElementById('prodDesc').value,
+                cuota12: document.getElementById('prodCuota12').value,
+                cuota24: document.getElementById('prodCuota24').value,
+                cuota36: document.getElementById('prodCuota36').value,
+                imagenes: imagenesTemporales.length > 0 ? imagenesTemporales : ['https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=600&q=80']
+            };
+
+            if(id) {
+                const idx = productos.findIndex(p => p.id === id);
+                if(idx !== -1) productos[idx] = prodData;
+            } else {
+                productos.unshift(prodData);
+            }
+
+            localStorage.setItem('tecnologia_py_prods', JSON.stringify(productos));
+            renderizarProductos();
+            cerrarModal();
+        }
+
+        function eliminarProducto(id) {
+            if(confirm('¿Seguro que deseas eliminar este producto?')) {
+                productos = productos.filter(p => p.id !== id);
+                localStorage.setItem('tecnologia_py_prods', JSON.stringify(productos));
+                renderizarProductos();
+            }
+        }
+
+        function toggleAdminMode() {
+            modoAdmin = !modoAdmin;
+            document.getElementById('adminBtnText').innerText = modoAdmin ? 'Salir Admin' : 'Admin';
+            document.getElementById('btnAddProductNav').style.display = modoAdmin ? 'block' : 'none';
+            renderizarProductos();
+        }
+
+        function filtrarCategoria(cat, btn) {
+            categoriaActual = cat;
+            document.querySelectorAll('.cat-chip').forEach(c => c.classList.remove('active'));
+            btn.classList.add('active');
+            renderizarProductos();
+        }
+
+        renderizarProductos();
+    </script>
+</body>
+</html>
