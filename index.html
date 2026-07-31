@@ -14,6 +14,9 @@
   <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/2586/2586488.png">
   <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2586/2586488.png">
 
+  <!-- Librería de Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
   <style>
     :root {
       --bg: #090d0a;
@@ -322,6 +325,9 @@
     .btn-submit {
       background: var(--accent); color: #000; font-weight: bold; border: none; padding: 10px; width: 100%; border-radius: 6px; cursor: pointer;
     }
+    .btn-submit:disabled {
+      opacity: 0.6;
+    }
 
     .disclaimer {
       text-align: center;
@@ -467,7 +473,7 @@
         </div>
       </div>
 
-      <button type="submit" class="btn-submit">Publicar en Catálogo</button>
+      <button type="submit" class="btn-submit" id="btnPublicar">Publicar en Catálogo</button>
     </form>
   </div>
 
@@ -484,7 +490,9 @@
     <button class="category-btn" onclick="filtrarCategoria('afiliados', this)">💰 Gana como Afiliado</button>
   </div>
 
-  <div class="grid" id="productGrid"></div>
+  <div class="grid" id="productGrid">
+    <p style="color:var(--subtext); text-align:center; grid-column:1/-1;">Cargando catálogo...</p>
+  </div>
 
   <div class="disclaimer">
     * Todos los productos y cuotas están sujetos a análisis de crédito y modificaciones de precios según la entidad financiera.
@@ -499,24 +507,34 @@
   let imagenesBase64Cargadas = [];
   let docBase64Cargado = "";
 
-  const productosBase = [
-    {
-      id: 1,
-      categoria: "celulares",
-      nombre: "Samsung Galaxy A06 (64GB)",
-      imagenes: ["https://images.unsplash.com/photo-1610945265064-0e34e5519bbf?w=400"],
-      descripcion: "Pantalla 6.7 HD+, Procesador Octa-Core, Cámara 50MP, Batería 5000mAh.",
-      cuotas: { c12: "165.541 Gs.", c24: "99.775 Gs.", c36: "63.000 Gs." }
+  // --- CONEXIÓN A SUPABASE ---
+  const SUPABASE_URL = "https://anmwuncacsvyyixnwrxi.supabase.co";
+  const SUPABASE_KEY = "sb_publishable_IcRkeRPGF17f8Bo7cG4dlA_MjpWrBXR";
+  const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  let productosCache = [];
+
+  async function obtenerProductos() {
+    const { data, error } = await supabaseClient
+      .from('productos')
+      .select('*')
+      .order('id', { ascending: false });
+
+    if (error) {
+      console.error('Error al cargar productos:', error);
+      return [];
     }
-  ];
 
-  function obtenerProductos() {
-    const almacenados = localStorage.getItem('tecnologia_py_productos_v3');
-    return almacenados ? JSON.parse(almacenados) : productosBase;
-  }
-
-  function guardarProductosEnStorage(lista) {
-    localStorage.setItem('tecnologia_py_productos_v3', JSON.stringify(lista));
+    // Adaptamos los nombres de columnas de la base de datos al formato que usa la app
+    return data.map(p => ({
+      id: p.id,
+      categoria: p.categoria,
+      nombre: p.nombre,
+      descripcion: p.descripcion,
+      imagenes: p.imagenes || [],
+      cuotas: p.cuotas || {},
+      docSrc: p.docsrc || null
+    }));
   }
 
   function toggleTipoFormulario(val) {
@@ -622,6 +640,9 @@
       const linkWa = `https://wa.me/${MI_WHATSAPP}?text=${msg}`;
 
       let fotos = p.imagenes || (p.imagen ? [p.imagen] : ["https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400"]);
+      if (fotos.length === 0) {
+        fotos = ["https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400"];
+      }
 
       let slidesHTML = fotos.map(img => `
         <div class="carousel-slide">
@@ -667,9 +688,10 @@
     });
   }
 
-  function filtrarProductos() {
+  async function filtrarProductos() {
     const query = document.getElementById('searchInput').value.toLowerCase();
-    const productos = obtenerProductos();
+    const productos = await obtenerProductos();
+    productosCache = productos;
     const filtrados = productos.filter(p => {
       const coincideCat = categoriaActual === 'todos' || p.categoria === categoriaActual;
       const coincideTexto = p.nombre.toLowerCase().includes(query) || (p.descripcion && p.descripcion.toLowerCase().includes(query));
@@ -704,13 +726,15 @@
     document.getElementById('adminPanel').style.display = 'none';
   }
 
-  function guardarProducto(e) {
+  async function guardarProducto(e) {
     e.preventDefault();
-    const productos = obtenerProductos();
+    const btn = document.getElementById('btnPublicar');
+    btn.disabled = true;
+    btn.innerText = "Publicando...";
+
     const cat = document.getElementById('pCategoria').value;
 
     let nuevoItem = {
-      id: Date.now(),
       categoria: cat,
       nombre: document.getElementById('pNombre').value,
       descripcion: document.getElementById('pDesc').value
@@ -720,9 +744,11 @@
       let srcDoc = docBase64Cargado || document.getElementById('pDocUrl').value;
       if (!srcDoc) {
         alert("Por favor, sube un archivo (PDF/HTML) o pega una URL directa.");
+        btn.disabled = false;
+        btn.innerText = "Publicar en Catálogo";
         return;
       }
-      nuevoItem.docSrc = srcDoc;
+      nuevoItem.docsrc = srcDoc;
     } else {
       let fotosFinales = [];
       if (imagenesBase64Cargadas.length > 0) {
@@ -736,6 +762,8 @@
 
       if (fotosFinales.length === 0) {
         alert("Por favor, sube al menos una imagen desde tu dispositivo o ingresa una URL.");
+        btn.disabled = false;
+        btn.innerText = "Publicar en Catálogo";
         return;
       }
 
@@ -747,21 +775,32 @@
       };
     }
 
-    productos.push(nuevoItem);
-    guardarProductosEnStorage(productos);
-    
-    alert("¡Publicación guardada con éxito!");
+    const { error } = await supabaseClient.from('productos').insert([nuevoItem]);
+
+    btn.disabled = false;
+    btn.innerText = "Publicar en Catálogo";
+
+    if (error) {
+      console.error(error);
+      alert("Hubo un error al publicar. Revisa tu conexión e intenta de nuevo.");
+      return;
+    }
+
+    alert("¡Publicación guardada con éxito! Ya es visible para todos los usuarios.");
     document.getElementById('productForm').reset();
     imagenesBase64Cargadas = [];
     docBase64Cargado = "";
     filtrarProductos();
   }
 
-  function eliminarProducto(id) {
+  async function eliminarProducto(id) {
     if (confirm("¿Eliminar esta publicación?")) {
-      let productos = obtenerProductos();
-      productos = productos.filter(p => p.id !== id);
-      guardarProductosEnStorage(productos);
+      const { error } = await supabaseClient.from('productos').delete().eq('id', id);
+      if (error) {
+        console.error(error);
+        alert("No se pudo eliminar. Intenta de nuevo.");
+        return;
+      }
       filtrarProductos();
     }
   }
