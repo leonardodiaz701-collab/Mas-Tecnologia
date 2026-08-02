@@ -376,6 +376,133 @@
       font-size: 0.95rem;
       margin-bottom: 20px;
     }
+
+    /* BANNER DE PRODUCTO DESTACADO / EN TENDENCIA */
+    @keyframes glowPulse {
+      0%, 100% { box-shadow: 0 0 15px rgba(163, 230, 53, 0.25); }
+      50% { box-shadow: 0 0 30px rgba(163, 230, 53, 0.55); }
+    }
+
+    @keyframes shimmer {
+      0% { background-position: -200% 0; }
+      100% { background-position: 200% 0; }
+    }
+
+    @keyframes fadeSlideIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .featured-wrap {
+      margin-bottom: 20px;
+      animation: fadeSlideIn 0.5s ease;
+    }
+
+    .featured-card {
+      position: relative;
+      background: linear-gradient(135deg, #17241a, #0c130e);
+      border: 2px solid var(--accent);
+      border-radius: 16px;
+      padding: 18px;
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      animation: glowPulse 2.5s ease-in-out infinite;
+      overflow: hidden;
+    }
+
+    .featured-badge {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: linear-gradient(90deg, var(--accent) 25%, #d9ffb0 50%, var(--accent) 75%);
+      background-size: 200% auto;
+      animation: shimmer 2.5s linear infinite;
+      color: #000;
+      font-weight: 900;
+      font-size: 0.7rem;
+      padding: 5px 12px;
+      border-radius: 20px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .featured-img {
+      width: 110px;
+      height: 110px;
+      border-radius: 12px;
+      overflow: hidden;
+      flex-shrink: 0;
+      background: #080d09;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .featured-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .featured-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .featured-info h3 {
+      margin: 0 0 4px 0;
+      font-size: 1.05rem;
+      color: white;
+      font-weight: 800;
+    }
+
+    .featured-info p {
+      margin: 0 0 8px 0;
+      font-size: 0.78rem;
+      color: var(--subtext);
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .featured-price {
+      font-size: 0.8rem;
+      color: var(--accent);
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+
+    .featured-cta {
+      background: var(--accent);
+      color: #000;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      padding: 8px 14px;
+      font-size: 0.8rem;
+      text-decoration: none;
+      display: inline-block;
+    }
+
+    .btn-destacar {
+      background: transparent;
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      font-size: 0.7rem;
+      font-weight: bold;
+      padding: 5px 8px;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 6px;
+      width: 100%;
+    }
+
+    .btn-destacar.activo {
+      background: var(--accent);
+      color: #000;
+    }
   </style>
 </head>
 <body>
@@ -490,6 +617,8 @@
     <button class="category-btn" onclick="filtrarCategoria('afiliados', this)">💰 Gana como Afiliado</button>
   </div>
 
+  <div id="featuredWrap"></div>
+
   <div class="grid" id="productGrid">
     <p style="color:var(--subtext); text-align:center; grid-column:1/-1;">Cargando catálogo...</p>
   </div>
@@ -533,7 +662,8 @@
       descripcion: p.descripcion,
       imagenes: p.imagenes || [],
       cuotas: p.cuotas || {},
-      docSrc: p.docsrc || null
+      docSrc: p.docsrc || null,
+      destacado: p.destacado || false
     }));
   }
 
@@ -577,6 +707,56 @@
 
   let categoriaActual = 'todos';
 
+  function renderizarDestacado(productos) {
+    const wrap = document.getElementById('featuredWrap');
+    const destacado = productos.find(p => p.destacado && p.categoria !== 'catalogo');
+
+    if (!destacado) {
+      wrap.innerHTML = '';
+      return;
+    }
+
+    const foto = (destacado.imagenes && destacado.imagenes[0]) || "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400";
+    const msg = encodeURIComponent(`Hola +Tecnologia-Py, vi el producto en tendencia *${destacado.nombre}* y quiero más información.`);
+    const linkWa = `https://wa.me/${MI_WHATSAPP}?text=${msg}`;
+
+    let precioTexto = '';
+    if (destacado.cuotas && destacado.cuotas.c12) {
+      precioTexto = `Desde ${destacado.cuotas.c12} en 12 cuotas`;
+    }
+
+    wrap.innerHTML = `
+      <div class="featured-wrap">
+        <div class="featured-card">
+          <div class="featured-badge">🔥 En Tendencia</div>
+          <div class="featured-img">
+            <img src="${foto}" alt="${destacado.nombre}" onerror="this.src='https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400'">
+          </div>
+          <div class="featured-info">
+            <h3>${destacado.nombre}</h3>
+            <p>${destacado.descripcion || ''}</p>
+            ${precioTexto ? `<div class="featured-price">${precioTexto}</div>` : ''}
+            <a href="${linkWa}" target="_blank" class="featured-cta">📲 Consultar ahora</a>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  async function toggleDestacado(id, estaActivo) {
+    if (estaActivo) {
+      // Quitar destacado
+      const { error } = await supabaseClient.from('productos').update({ destacado: false }).eq('id', id);
+      if (error) { console.error(error); alert('No se pudo actualizar.'); return; }
+    } else {
+      // Primero quitamos destacado de todos, luego marcamos el elegido
+      const { error: e1 } = await supabaseClient.from('productos').update({ destacado: false }).neq('id', 0);
+      const { error: e2 } = await supabaseClient.from('productos').update({ destacado: true }).eq('id', id);
+      if (e1 || e2) { console.error(e1 || e2); alert('No se pudo actualizar.'); return; }
+    }
+    filtrarProductos();
+  }
+
   function renderizarProductos(lista) {
     const grid = document.getElementById('productGrid');
     grid.innerHTML = '';
@@ -615,6 +795,12 @@
 
     lista.forEach(p => {
       let botonBorrar = modoAdminActivado ? `<button class="btn-delete" onclick="eliminarProducto(${p.id})">🗑️ Eliminar</button>` : '';
+      let botonDestacar = '';
+      if (modoAdminActivado && p.categoria !== 'catalogo') {
+        botonDestacar = `<button class="btn-destacar ${p.destacado ? 'activo' : ''}" onclick="toggleDestacado(${p.id}, ${!!p.destacado})">
+          ${p.destacado ? '⭐ Quitar de Tendencia' : '☆ Marcar en Tendencia'}
+        </button>`;
+      }
 
       // Si es un documento o catálogo embebible
       if (p.categoria === 'catalogo' || p.docSrc) {
@@ -682,6 +868,7 @@
           <a href="${linkWa}" target="_blank" class="btn-whatsapp">
             📲 Solicitar por WhatsApp
           </a>
+          ${botonDestacar}
           ${botonBorrar}
         </div>
       `;
@@ -692,6 +879,14 @@
     const query = document.getElementById('searchInput').value.toLowerCase();
     const productos = await obtenerProductos();
     productosCache = productos;
+
+    // El banner de tendencia solo se muestra en la vista "Todos" y sin búsqueda activa
+    if (categoriaActual === 'todos' && query === '') {
+      renderizarDestacado(productos);
+    } else {
+      document.getElementById('featuredWrap').innerHTML = '';
+    }
+
     const filtrados = productos.filter(p => {
       const coincideCat = categoriaActual === 'todos' || p.categoria === categoriaActual;
       const coincideTexto = p.nombre.toLowerCase().includes(query) || (p.descripcion && p.descripcion.toLowerCase().includes(query));
