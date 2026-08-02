@@ -677,6 +677,7 @@
     <button class="category-btn" onclick="filtrarCategoria('varios', this)">Varios</button>
     <button class="category-btn" onclick="filtrarCategoria('trabaja', this)">💼 Trabaja con Nosotros</button>
     <button class="category-btn" onclick="filtrarCategoria('afiliados', this)">💰 Gana como Afiliado</button>
+    <button class="category-btn" onclick="filtrarCategoria('nosotros', this)">🚀 Quiénes Somos</button>
   </div>
 
   <div id="featuredWrap"></div>
@@ -940,6 +941,27 @@
           <p>Refiere a tus amigos o clientes interesados en adquirir productos tecnológicos a cuotas y gana comisiones por cada venta aprobada.</p>
           <a href="https://wa.me/${MI_WHATSAPP}?text=${encodeURIComponent('Hola +Tecnologia-Py, quisiera recibir información para ganar dinero como Afiliado.')}" target="_blank" class="btn-whatsapp-large btn-whatsapp">
             📲 Solicitar Plan de Afiliados
+          </a>
+        </div>
+      `;
+      return;
+    }
+
+    if (categoriaActual === 'nosotros') {
+      grid.innerHTML = `
+        <div class="action-banner" style="grid-column: 1/-1; text-align:left;">
+          <h2 style="text-align:center;">🚀 Quiénes Somos</h2>
+          <p style="text-align:left; line-height:1.6;">
+            <b style="color:var(--accent);">+Tecnologia-Py nació de una idea simple: nadie debería quedarse sin su celular por no tener el dinero de entrega inicial.</b>
+            <br><br>
+            Fundada y dirigida por <b>Leonardo Díaz</b>, +Tecnologia-Py arrancó con un objetivo claro — abrirle la puerta a la tecnología a más paraguayos, sin las trabas que otros ponen. Elegís el modelo que querés, lo retirás, y listo. Sin entrega inicial, sin excusas.
+            <br><br>
+            Hoy seguimos con la misma convicción: <b>ofrecer, de forma continua, más tecnología al alcance de todos</b>, fortaleciendo vínculos reales y constantes con cada cliente en Paraguay. No vendemos celulares y desaparecemos — construimos confianza, una entrega a la vez.
+            <br><br>
+            <i style="color:var(--accent);">Esto recién empieza. +Tecnologia-Py va por más.</i>
+          </p>
+          <a href="https://wa.me/${MI_WHATSAPP}?text=${encodeURIComponent('Hola +Tecnologia-Py, quiero saber más sobre ustedes.')}" target="_blank" class="btn-whatsapp-large btn-whatsapp" style="margin-top:15px;">
+            📲 Escribinos por WhatsApp
           </a>
         </div>
       `;
@@ -1255,4 +1277,4 @@
 </script>
 
 </body>
-</html>
+  </html>
