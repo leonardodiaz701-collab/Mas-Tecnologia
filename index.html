@@ -403,18 +403,16 @@
       background: linear-gradient(135deg, #17241a, #0c130e);
       border: 2px solid var(--accent);
       border-radius: 16px;
-      padding: 18px;
+      padding: 14px 18px 18px 18px;
       display: flex;
-      gap: 16px;
-      align-items: center;
+      flex-direction: column;
+      gap: 12px;
       animation: glowPulse 2.5s ease-in-out infinite;
       overflow: hidden;
     }
 
     .featured-badge {
-      position: absolute;
-      top: 12px;
-      right: 12px;
+      align-self: flex-end;
       background: linear-gradient(90deg, var(--accent) 25%, #d9ffb0 50%, var(--accent) 75%);
       background-size: 200% auto;
       animation: shimmer 2.5s linear infinite;
@@ -425,6 +423,13 @@
       border-radius: 20px;
       text-transform: uppercase;
       letter-spacing: 0.5px;
+      white-space: nowrap;
+    }
+
+    .featured-body {
+      display: flex;
+      gap: 16px;
+      align-items: center;
     }
 
     .featured-img {
@@ -535,6 +540,13 @@
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
       <h2 style="font-size: 1rem; margin: 0; color: var(--accent);">Gestión / Cargar Nuevo Contenido</h2>
       <button onclick="cerrarAdmin()" style="background: var(--danger); color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer;">Cerrar</button>
+    </div>
+
+    <div style="background:#080d09; border:1px dashed var(--accent); border-radius:8px; padding:12px; margin-bottom:16px;">
+      <label style="display:block; font-size:0.8rem; color:var(--subtext); margin-bottom:6px;">🔥 Elegir producto en Tendencia:</label>
+      <select id="selectDestacado" onchange="destacarDesdeSelector(this.value)" style="width:100%; padding:8px; background:#090d0a; border:1px solid var(--card-border); border-radius:6px; color:white;">
+        <option value="">Cargando productos...</option>
+      </select>
     </div>
 
     <form id="productForm" onsubmit="guardarProducto(event)">
@@ -729,6 +741,7 @@
       <div class="featured-wrap">
         <div class="featured-card">
           <div class="featured-badge">🔥 En Tendencia</div>
+          <div class="featured-body">
           <div class="featured-img">
             <img src="${foto}" alt="${destacado.nombre}" onerror="this.src='https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400'">
           </div>
@@ -738,9 +751,36 @@
             ${precioTexto ? `<div class="featured-price">${precioTexto}</div>` : ''}
             <a href="${linkWa}" target="_blank" class="featured-cta">📲 Consultar ahora</a>
           </div>
+          </div>
         </div>
       </div>
     `;
+  }
+
+  function poblarSelectorDestacado(productos) {
+    const select = document.getElementById('selectDestacado');
+    if (!select) return;
+
+    const elegibles = productos.filter(p => p.categoria !== 'catalogo');
+    let opciones = '<option value="">— Ninguno —</option>';
+    elegibles.forEach(p => {
+      const seleccionado = p.destacado ? 'selected' : '';
+      opciones += `<option value="${p.id}" ${seleccionado}>${p.nombre}</option>`;
+    });
+    select.innerHTML = opciones;
+  }
+
+  async function destacarDesdeSelector(id) {
+    if (id === '') {
+      // Quitar cualquier destacado activo
+      const { error } = await supabaseClient.from('productos').update({ destacado: false }).neq('id', 0);
+      if (error) { console.error(error); alert('No se pudo actualizar.'); return; }
+    } else {
+      const { error: e1 } = await supabaseClient.from('productos').update({ destacado: false }).neq('id', 0);
+      const { error: e2 } = await supabaseClient.from('productos').update({ destacado: true }).eq('id', Number(id));
+      if (e1 || e2) { console.error(e1 || e2); alert('No se pudo actualizar.'); return; }
+    }
+    filtrarProductos();
   }
 
   async function toggleDestacado(id, estaActivo) {
@@ -879,6 +919,10 @@
     const query = document.getElementById('searchInput').value.toLowerCase();
     const productos = await obtenerProductos();
     productosCache = productos;
+
+    if (modoAdminActivado) {
+      poblarSelectorDestacado(productos);
+    }
 
     // El banner de tendencia solo se muestra en la vista "Todos" y sin búsqueda activa
     if (categoriaActual === 'todos' && query === '') {
