@@ -78,20 +78,30 @@
     .brand {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
     }
 
     .brand-svg {
-      width: 26px;
-      height: 26px;
+      width: 42px;
+      height: 42px;
       fill: var(--accent);
     }
 
     .brand h1 {
-      font-size: 1.1rem;
+      font-size: 2.1rem;
       margin: 0;
       color: var(--accent);
-      font-weight: 800;
+      font-weight: 900;
+      letter-spacing: 0.2px;
+      line-height: 1.1;
+    }
+
+    .brand-slogan {
+      margin: 0 0 4px 0;
+      font-size: 0.75rem;
+      color: var(--subtext);
+      font-weight: 600;
+      letter-spacing: 0.3px;
     }
 
     .visit-badge {
@@ -565,9 +575,12 @@
 </div>
 
 <header>
-  <div class="brand">
-    <svg class="brand-svg" viewBox="0 0 24 24"><path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z"/></svg>
-    <h1>+Tecnologia-Py</h1>
+  <div>
+    <div class="brand">
+      <svg class="brand-svg" viewBox="0 0 24 24"><path d="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14z"/></svg>
+      <h1>+Tecnologia-Py</h1>
+    </div>
+    <p class="brand-slogan">Más que una tienda de celulares</p>
   </div>
 
   <div class="visit-badge">
@@ -595,6 +608,11 @@
       </select>
     </div>
 
+    <div id="avisoEdicion" style="display:none; background:#1a2a1e; border:1px solid var(--accent); border-radius:8px; padding:10px; margin-bottom:12px; font-size:0.8rem; display:flex; justify-content:space-between; align-items:center; gap:8px;">
+      <span id="avisoEdicionTexto">Editando producto</span>
+      <button type="button" onclick="cancelarEdicion()" style="background:var(--card-border); color:white; border:none; padding:5px 10px; border-radius:6px; font-size:0.75rem; cursor:pointer; white-space:nowrap;">Cancelar</button>
+    </div>
+
     <form id="productForm" onsubmit="guardarProducto(event)">
       <div class="form-group">
         <label>Categoría:</label>
@@ -618,7 +636,10 @@
         <div class="form-group">
           <label id="lblImgHelp">Subir Varias Imágenes (Selecciona 1 o varias):</label>
           <input type="file" id="pImagenFile" accept="image/*" multiple onchange="convertirImagenesABase64(event)">
+          <small style="color:var(--subtext); font-size:0.7rem;">Las fotos que subas se van sumando a las que ya tenés cargadas.</small>
         </div>
+
+        <div id="imgPreviewList" style="display:flex; flex-wrap:wrap; gap:8px; margin: 8px 0;"></div>
 
         <div class="form-group">
           <label>O ingresar URLs (separadas por coma):</label>
@@ -681,6 +702,8 @@
   let modoAdminActivado = false;
   let imagenesBase64Cargadas = [];
   let docBase64Cargado = "";
+  let productoEditando = null; // id del producto en edición, o null si es publicación nueva
+  let imagenesExistentes = []; // fotos que el producto ya tenía guardadas, al editar
 
   // --- CONEXIÓN A SUPABASE ---
   const SUPABASE_URL = "https://anmwuncacsvyyixnwrxi.supabase.co";
@@ -725,17 +748,59 @@
 
   function convertirImagenesABase64(event) {
     const files = Array.from(event.target.files);
-    imagenesBase64Cargadas = [];
-    
-    let procesadas = 0;
+    let pendientes = files.length;
+    if (pendientes === 0) return;
+
     files.forEach(file => {
       const reader = new FileReader();
       reader.onload = function(e) {
         imagenesBase64Cargadas.push(e.target.result);
-        procesadas++;
+        pendientes--;
+        if (pendientes === 0) {
+          renderizarPreviewImagenes();
+        }
       };
       reader.readAsDataURL(file);
     });
+    // Limpiamos el input para poder volver a elegir (incluso el mismo archivo) sin problemas
+    event.target.value = '';
+  }
+
+  function renderizarPreviewImagenes() {
+    const cont = document.getElementById('imgPreviewList');
+    if (!cont) return;
+
+    let html = '';
+
+    imagenesExistentes.forEach((img, i) => {
+      html += `
+        <div style="position:relative; width:64px; height:64px;">
+          <img src="${img}" style="width:100%; height:100%; object-fit:cover; border-radius:6px; border:1px solid var(--card-border);">
+          <button type="button" onclick="quitarImagenExistente(${i})" style="position:absolute; top:-6px; right:-6px; background:var(--danger); color:white; border:none; border-radius:50%; width:20px; height:20px; font-size:0.7rem; cursor:pointer; line-height:1;">✕</button>
+        </div>
+      `;
+    });
+
+    imagenesBase64Cargadas.forEach((img, i) => {
+      html += `
+        <div style="position:relative; width:64px; height:64px;">
+          <img src="${img}" style="width:100%; height:100%; object-fit:cover; border-radius:6px; border:1px solid var(--accent);">
+          <button type="button" onclick="quitarImagenNueva(${i})" style="position:absolute; top:-6px; right:-6px; background:var(--danger); color:white; border:none; border-radius:50%; width:20px; height:20px; font-size:0.7rem; cursor:pointer; line-height:1;">✕</button>
+        </div>
+      `;
+    });
+
+    cont.innerHTML = html;
+  }
+
+  function quitarImagenExistente(i) {
+    imagenesExistentes.splice(i, 1);
+    renderizarPreviewImagenes();
+  }
+
+  function quitarImagenNueva(i) {
+    imagenesBase64Cargadas.splice(i, 1);
+    renderizarPreviewImagenes();
   }
 
   let categoriaActual = 'todos';
@@ -893,6 +958,7 @@
 
     lista.forEach(p => {
       let botonBorrar = modoAdminActivado ? `<button class="btn-delete" onclick="eliminarProducto(${p.id})">🗑️ Eliminar</button>` : '';
+      let botonEditar = modoAdminActivado ? `<button class="btn-destacar" style="margin-top:6px;" onclick="editarProducto(${p.id})">✏️ Editar / Agregar Fotos</button>` : '';
       let botonDestacar = '';
       if (modoAdminActivado && p.categoria !== 'catalogo') {
         botonDestacar = `<button class="btn-destacar ${p.destacado ? 'activo' : ''}" onclick="toggleDestacado(${p.id}, ${!!p.destacado})">
@@ -913,6 +979,7 @@
                 🔍 Abrir en Pantalla Completa
               </a>
             </div>
+            ${botonEditar}
             ${botonBorrar}
           </div>
         `;
@@ -944,6 +1011,7 @@
             <a href="${linkWaCat}" target="_blank" class="btn-whatsapp" style="margin-top:10px;">
               📲 Consultar por WhatsApp
             </a>
+            ${botonEditar}
             ${botonBorrar}
           </div>
         `;
@@ -998,6 +1066,7 @@
             📲 Solicitar por WhatsApp
           </a>
           ${botonDestacar}
+          ${botonEditar}
           ${botonBorrar}
         </div>
       `;
@@ -1058,7 +1127,7 @@
     e.preventDefault();
     const btn = document.getElementById('btnPublicar');
     btn.disabled = true;
-    btn.innerText = "Publicando...";
+    btn.innerText = productoEditando ? "Guardando..." : "Publicando...";
 
     const cat = document.getElementById('pCategoria').value;
 
@@ -1068,10 +1137,9 @@
       descripcion: document.getElementById('pDesc').value
     };
 
-    let fotosFinales = [];
-    if (imagenesBase64Cargadas.length > 0) {
-      fotosFinales = imagenesBase64Cargadas;
-    } else {
+    let fotosFinales = [...imagenesExistentes, ...imagenesBase64Cargadas];
+
+    if (fotosFinales.length === 0) {
       const urlValue = document.getElementById('pImagen').value;
       if (urlValue.trim() !== '') {
         fotosFinales = urlValue.split(',').map(u => u.trim());
@@ -1081,7 +1149,7 @@
     if (fotosFinales.length === 0) {
       alert("Por favor, sube al menos una imagen desde tu dispositivo o ingresa una URL.");
       btn.disabled = false;
-      btn.innerText = "Publicar en Catálogo";
+      btn.innerText = productoEditando ? "Guardar Cambios" : "Publicar en Catálogo";
       return;
     }
 
@@ -1095,21 +1163,63 @@
       };
     }
 
-    const { error } = await supabaseClient.from('productos').insert([nuevoItem]);
+    let error;
+    if (productoEditando) {
+      ({ error } = await supabaseClient.from('productos').update(nuevoItem).eq('id', productoEditando));
+    } else {
+      ({ error } = await supabaseClient.from('productos').insert([nuevoItem]));
+    }
 
     btn.disabled = false;
-    btn.innerText = "Publicar en Catálogo";
 
     if (error) {
       console.error(error);
-      alert("Hubo un error al publicar. Revisa tu conexión e intenta de nuevo.");
+      alert("Hubo un error al guardar. Revisa tu conexión e intenta de nuevo.");
+      btn.innerText = productoEditando ? "Guardar Cambios" : "Publicar en Catálogo";
       return;
     }
 
-    alert("¡Publicación guardada con éxito! Ya es visible para todos los usuarios.");
-    document.getElementById('productForm').reset();
-    imagenesBase64Cargadas = [];
+    alert(productoEditando ? "¡Cambios guardados con éxito!" : "¡Publicación guardada con éxito! Ya es visible para todos los usuarios.");
+    cancelarEdicion();
     filtrarProductos();
+  }
+
+  function editarProducto(id) {
+    const producto = productosCache.find(p => p.id === id);
+    if (!producto) return;
+
+    productoEditando = id;
+    imagenesExistentes = [...(producto.imagenes || [])];
+    imagenesBase64Cargadas = [];
+
+    document.getElementById('pCategoria').value = producto.categoria;
+    document.getElementById('pNombre').value = producto.nombre;
+    document.getElementById('pDesc').value = producto.descripcion || '';
+    document.getElementById('pC12').value = (producto.cuotas && producto.cuotas.c12) || '';
+    document.getElementById('pC24').value = (producto.cuotas && producto.cuotas.c24) || '';
+    document.getElementById('pC36').value = (producto.cuotas && producto.cuotas.c36) || '';
+    document.getElementById('pImagen').value = '';
+
+    toggleTipoFormulario(producto.categoria);
+    renderizarPreviewImagenes();
+
+    document.getElementById('avisoEdicion').style.display = 'flex';
+    document.getElementById('avisoEdicionTexto').innerText = `Editando: ${producto.nombre}`;
+    document.getElementById('btnPublicar').innerText = 'Guardar Cambios';
+
+    document.getElementById('adminPanel').style.display = 'block';
+    document.getElementById('adminPanel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function cancelarEdicion() {
+    productoEditando = null;
+    imagenesExistentes = [];
+    imagenesBase64Cargadas = [];
+    document.getElementById('productForm').reset();
+    document.getElementById('imgPreviewList').innerHTML = '';
+    document.getElementById('avisoEdicion').style.display = 'none';
+    document.getElementById('btnPublicar').innerText = 'Publicar en Catálogo';
+    toggleTipoFormulario(document.getElementById('pCategoria').value);
   }
 
   async function eliminarProducto(id) {
