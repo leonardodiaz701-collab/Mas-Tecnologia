@@ -403,7 +403,7 @@
       background: linear-gradient(135deg, #17241a, #0c130e);
       border: 2px solid var(--accent);
       border-radius: 16px;
-      padding: 14px 18px 18px 18px;
+      padding: 14px;
       display: flex;
       flex-direction: column;
       gap: 12px;
@@ -412,42 +412,86 @@
     }
 
     .featured-badge {
-      align-self: flex-end;
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      z-index: 3;
       background: linear-gradient(90deg, var(--accent) 25%, #d9ffb0 50%, var(--accent) 75%);
       background-size: 200% auto;
       animation: shimmer 2.5s linear infinite;
       color: #000;
       font-weight: 900;
-      font-size: 0.7rem;
-      padding: 5px 12px;
+      font-size: 0.72rem;
+      padding: 6px 14px;
       border-radius: 20px;
       text-transform: uppercase;
       letter-spacing: 0.5px;
       white-space: nowrap;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+    }
+
+    .featured-carousel {
+      position: relative;
+      width: 100%;
+      height: 260px;
+      background: #080d09;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .featured-carousel .carousel-track {
+      display: flex;
+      width: 100%;
+      height: 100%;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scrollbar-width: none;
+      scroll-behavior: smooth;
+    }
+    .featured-carousel .carousel-track::-webkit-scrollbar { display: none; }
+
+    .featured-carousel .carousel-slide {
+      min-width: 100%;
+      height: 100%;
+      scroll-snap-align: start;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .featured-carousel .carousel-slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      padding: 6px;
+    }
+
+    .featured-dots {
+      position: absolute;
+      bottom: 10px;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      z-index: 2;
+    }
+
+    .featured-dots span {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.35);
+      transition: background 0.2s;
+    }
+
+    .featured-dots span.activo {
+      background: var(--accent);
     }
 
     .featured-body {
       display: flex;
-      gap: 16px;
-      align-items: center;
-    }
-
-    .featured-img {
-      width: 110px;
-      height: 110px;
-      border-radius: 12px;
-      overflow: hidden;
-      flex-shrink: 0;
-      background: #080d09;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .featured-img img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
+      flex-direction: column;
     }
 
     .featured-info {
@@ -457,14 +501,14 @@
 
     .featured-info h3 {
       margin: 0 0 4px 0;
-      font-size: 1.05rem;
+      font-size: 1.2rem;
       color: white;
       font-weight: 800;
     }
 
     .featured-info p {
       margin: 0 0 8px 0;
-      font-size: 0.78rem;
+      font-size: 0.85rem;
       color: var(--subtext);
       display: -webkit-box;
       -webkit-line-clamp: 2;
@@ -473,10 +517,10 @@
     }
 
     .featured-price {
-      font-size: 0.8rem;
+      font-size: 0.9rem;
       color: var(--accent);
       font-weight: 800;
-      margin-bottom: 8px;
+      margin-bottom: 10px;
     }
 
     .featured-cta {
@@ -485,10 +529,12 @@
       font-weight: bold;
       border: none;
       border-radius: 8px;
-      padding: 8px 14px;
-      font-size: 0.8rem;
+      padding: 12px;
+      width: 100%;
+      font-size: 0.9rem;
       text-decoration: none;
-      display: inline-block;
+      text-align: center;
+      display: block;
     }
 
     .btn-destacar {
@@ -558,31 +604,19 @@
           <option value="parlantes">Parlantes</option>
           <option value="electro">Electrodomésticos</option>
           <option value="varios">Varios</option>
-          <option value="catalogo">Catálogo Interactivo (PDF / HTML)</option>
+          <option value="catalogo">Catálogo (varias fotos deslizables)</option>
         </select>
       </div>
 
       <div class="form-group">
         <label id="lblNombre">Marca y Modelo / Título del Catálogo:</label>
-        <input type="text" id="pNombre" placeholder="Ej: iPhone 17 Pro / Catálogo de Ofertas PDF" required>
+        <input type="text" id="pNombre" placeholder="Ej: iPhone 17 Pro / Catálogo de Ofertas" required>
       </div>
 
-      <!-- OPCIONES DE DOCUMENTO PDF/HTML -->
-      <div id="secDocInputs" style="display: none; background: #080d09; padding: 10px; border-radius: 8px; border: 1px dashed var(--accent); margin-bottom: 10px;">
-        <div class="form-group">
-          <label>Subir Archivo PDF o HTML:</label>
-          <input type="file" id="pDocFile" accept=".pdf, .html, .htm" onchange="convertirDocABase64(event)">
-        </div>
-        <div class="form-group">
-          <label>O Enlace/URL directo al PDF o Web HTML:</label>
-          <input type="url" id="pDocUrl" placeholder="https://ejemplo.com/catalogo.pdf">
-        </div>
-      </div>
-
-      <!-- OPCIONES MÚLTIPLES DE IMAGEN PARA PRODUCTOS -->
+      <!-- OPCIONES MÚLTIPLES DE IMAGEN PARA PRODUCTOS Y CATÁLOGOS -->
       <div id="secImgInputs">
         <div class="form-group">
-          <label>Subir Varias Imágenes (Selecciona 1 o varias):</label>
+          <label id="lblImgHelp">Subir Varias Imágenes (Selecciona 1 o varias):</label>
           <input type="file" id="pImagenFile" accept="image/*" multiple onchange="convertirImagenesABase64(event)">
         </div>
 
@@ -619,7 +653,7 @@
   <div class="filter-bar">
     <input type="text" id="searchInput" class="search-input" placeholder="Buscar modelo, marca o categoría..." onkeyup="filtrarProductos()">
     <button class="category-btn active" onclick="filtrarCategoria('todos', this)">Todos</button>
-    <button class="category-btn" onclick="filtrarCategoria('catalogo', this)">📂 Catálogos PDF/HTML</button>
+    <button class="category-btn" onclick="filtrarCategoria('catalogo', this)">📂 Catálogo</button>
     <button class="category-btn" onclick="filtrarCategoria('celulares', this)">Celulares</button>
     <button class="category-btn" onclick="filtrarCategoria('notebooks', this)">Notebooks</button>
     <button class="category-btn" onclick="filtrarCategoria('parlantes', this)">Parlantes</button>
@@ -681,13 +715,11 @@
 
   function toggleTipoFormulario(val) {
     if (val === 'catalogo') {
-      document.getElementById('secDocInputs').style.display = 'block';
-      document.getElementById('secImgInputs').style.display = 'none';
       document.getElementById('secCuotas').style.display = 'none';
+      document.getElementById('lblImgHelp').innerText = 'Subir las fotos del catálogo (podés elegir varias):';
     } else {
-      document.getElementById('secDocInputs').style.display = 'none';
-      document.getElementById('secImgInputs').style.display = 'block';
       document.getElementById('secCuotas').style.display = 'grid';
+      document.getElementById('lblImgHelp').innerText = 'Subir Varias Imágenes (Selecciona 1 o varias):';
     }
   }
 
@@ -706,29 +738,29 @@
     });
   }
 
-  function convertirDocABase64(event) {
-    const file = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        docBase64Cargado = e.target.result;
-      };
-      reader.readAsDataURL(file);
-    }
-  }
-
   let categoriaActual = 'todos';
+
+  let featuredAutoSlideTimer = null;
 
   function renderizarDestacado(productos) {
     const wrap = document.getElementById('featuredWrap');
     const destacado = productos.find(p => p.destacado && p.categoria !== 'catalogo');
+
+    // Limpiar cualquier auto-desplazamiento anterior
+    if (featuredAutoSlideTimer) {
+      clearInterval(featuredAutoSlideTimer);
+      featuredAutoSlideTimer = null;
+    }
 
     if (!destacado) {
       wrap.innerHTML = '';
       return;
     }
 
-    const foto = (destacado.imagenes && destacado.imagenes[0]) || "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400";
+    let fotos = (destacado.imagenes && destacado.imagenes.length > 0)
+      ? destacado.imagenes
+      : ["https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400"];
+
     const msg = encodeURIComponent(`Hola +Tecnologia-Py, vi el producto en tendencia *${destacado.nombre}* y quiero más información.`);
     const linkWa = `https://wa.me/${MI_WHATSAPP}?text=${msg}`;
 
@@ -737,24 +769,50 @@
       precioTexto = `Desde ${destacado.cuotas.c12} en 12 cuotas`;
     }
 
+    const slidesHTML = fotos.map(img => `
+      <div class="carousel-slide">
+        <img src="${img}" alt="${destacado.nombre}" onerror="this.src='https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400'">
+      </div>
+    `).join('');
+
+    const dotsHTML = fotos.length > 1
+      ? `<div class="featured-dots">${fotos.map((_, i) => `<span class="${i === 0 ? 'activo' : ''}"></span>`).join('')}</div>`
+      : '';
+
     wrap.innerHTML = `
       <div class="featured-wrap">
         <div class="featured-card">
           <div class="featured-badge">🔥 En Tendencia</div>
+          <div class="featured-carousel">
+            <div class="carousel-track" id="featuredTrack">
+              ${slidesHTML}
+            </div>
+            ${dotsHTML}
+          </div>
           <div class="featured-body">
-          <div class="featured-img">
-            <img src="${foto}" alt="${destacado.nombre}" onerror="this.src='https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400'">
-          </div>
-          <div class="featured-info">
-            <h3>${destacado.nombre}</h3>
-            <p>${destacado.descripcion || ''}</p>
-            ${precioTexto ? `<div class="featured-price">${precioTexto}</div>` : ''}
-            <a href="${linkWa}" target="_blank" class="featured-cta">📲 Consultar ahora</a>
-          </div>
+            <div class="featured-info">
+              <h3>${destacado.nombre}</h3>
+              <p>${destacado.descripcion || ''}</p>
+              ${precioTexto ? `<div class="featured-price">${precioTexto}</div>` : ''}
+              <a href="${linkWa}" target="_blank" class="featured-cta">📲 Consultar ahora</a>
+            </div>
           </div>
         </div>
       </div>
     `;
+
+    // Auto-desplazamiento entre fotos si hay más de una
+    if (fotos.length > 1) {
+      const track = document.getElementById('featuredTrack');
+      const dots = wrap.querySelectorAll('.featured-dots span');
+      let indiceActual = 0;
+
+      featuredAutoSlideTimer = setInterval(() => {
+        indiceActual = (indiceActual + 1) % fotos.length;
+        track.scrollTo({ left: track.clientWidth * indiceActual, behavior: 'smooth' });
+        dots.forEach((d, i) => d.classList.toggle('activo', i === indiceActual));
+      }, 3000);
+    }
   }
 
   function poblarSelectorDestacado(productos) {
@@ -842,8 +900,8 @@
         </button>`;
       }
 
-      // Si es un documento o catálogo embebible
-      if (p.categoria === 'catalogo' || p.docSrc) {
+      // Catálogo: si es un catálogo viejo con PDF/HTML, se muestra el visor embebido (compatibilidad)
+      if (p.categoria === 'catalogo' && p.docSrc) {
         const docUrl = p.docSrc;
         grid.innerHTML += `
           <div class="catalog-viewer-card" style="grid-column: 1/-1;">
@@ -855,6 +913,37 @@
                 🔍 Abrir en Pantalla Completa
               </a>
             </div>
+            ${botonBorrar}
+          </div>
+        `;
+        return;
+      }
+
+      // Catálogo nuevo: galería de fotos deslizables, ocupa todo el ancho
+      if (p.categoria === 'catalogo') {
+        let fotosCat = p.imagenes && p.imagenes.length > 0 ? p.imagenes : ["https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400"];
+        let slidesCatHTML = fotosCat.map(img => `
+          <div class="carousel-slide">
+            <img src="${img}" alt="${p.nombre}" onerror="this.src='https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400'">
+          </div>
+        `).join('');
+
+        const msgCat = encodeURIComponent(`Hola +Tecnologia-Py, vi el catálogo *${p.nombre}* y me interesa una publicación.`);
+        const linkWaCat = `https://wa.me/${MI_WHATSAPP}?text=${msgCat}`;
+
+        grid.innerHTML += `
+          <div class="catalog-viewer-card" style="grid-column: 1/-1;">
+            <h3 class="product-title">${p.nombre}</h3>
+            <p class="product-desc">${p.descripcion}</p>
+            <div class="carousel-container" style="height: 340px;">
+              <div class="carousel-track">
+                ${slidesCatHTML}
+              </div>
+              ${fotosCat.length > 1 ? `<div class="carousel-badge">↔ Desliza (${fotosCat.length} fotos)</div>` : ''}
+            </div>
+            <a href="${linkWaCat}" target="_blank" class="btn-whatsapp" style="margin-top:10px;">
+              📲 Consultar por WhatsApp
+            </a>
             ${botonBorrar}
           </div>
         `;
@@ -979,34 +1068,26 @@
       descripcion: document.getElementById('pDesc').value
     };
 
-    if (cat === 'catalogo') {
-      let srcDoc = docBase64Cargado || document.getElementById('pDocUrl').value;
-      if (!srcDoc) {
-        alert("Por favor, sube un archivo (PDF/HTML) o pega una URL directa.");
-        btn.disabled = false;
-        btn.innerText = "Publicar en Catálogo";
-        return;
-      }
-      nuevoItem.docsrc = srcDoc;
+    let fotosFinales = [];
+    if (imagenesBase64Cargadas.length > 0) {
+      fotosFinales = imagenesBase64Cargadas;
     } else {
-      let fotosFinales = [];
-      if (imagenesBase64Cargadas.length > 0) {
-        fotosFinales = imagenesBase64Cargadas;
-      } else {
-        const urlValue = document.getElementById('pImagen').value;
-        if (urlValue.trim() !== '') {
-          fotosFinales = urlValue.split(',').map(u => u.trim());
-        }
+      const urlValue = document.getElementById('pImagen').value;
+      if (urlValue.trim() !== '') {
+        fotosFinales = urlValue.split(',').map(u => u.trim());
       }
+    }
 
-      if (fotosFinales.length === 0) {
-        alert("Por favor, sube al menos una imagen desde tu dispositivo o ingresa una URL.");
-        btn.disabled = false;
-        btn.innerText = "Publicar en Catálogo";
-        return;
-      }
+    if (fotosFinales.length === 0) {
+      alert("Por favor, sube al menos una imagen desde tu dispositivo o ingresa una URL.");
+      btn.disabled = false;
+      btn.innerText = "Publicar en Catálogo";
+      return;
+    }
 
-      nuevoItem.imagenes = fotosFinales;
+    nuevoItem.imagenes = fotosFinales;
+
+    if (cat !== 'catalogo') {
       nuevoItem.cuotas = {
         c12: document.getElementById('pC12').value,
         c24: document.getElementById('pC24').value,
@@ -1028,7 +1109,6 @@
     alert("¡Publicación guardada con éxito! Ya es visible para todos los usuarios.");
     document.getElementById('productForm').reset();
     imagenesBase64Cargadas = [];
-    docBase64Cargado = "";
     filtrarProductos();
   }
 
