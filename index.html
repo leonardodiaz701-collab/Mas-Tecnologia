@@ -560,6 +560,142 @@
       background: var(--accent);
       color: #000;
     }
+
+    /* CHAT DE PREGUNTAS FRECUENTES */
+    .chat-fab {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #000;
+      border: none;
+      font-size: 1.6rem;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.4), 0 0 0 4px rgba(163,230,53,0.2);
+      cursor: pointer;
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .chat-panel {
+      display: none;
+      position: fixed;
+      bottom: 0;
+      right: 0;
+      left: 0;
+      max-width: 420px;
+      margin: 0 auto;
+      height: 70vh;
+      max-height: 560px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 18px 18px 0 0;
+      z-index: 250;
+      flex-direction: column;
+      overflow: hidden;
+      box-shadow: 0 -4px 20px rgba(0,0,0,0.5);
+    }
+
+    .chat-header {
+      background: #17241a;
+      padding: 14px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    .chat-header b {
+      color: var(--accent);
+      font-size: 0.95rem;
+    }
+
+    .chat-header span {
+      display: block;
+      font-size: 0.7rem;
+      color: var(--subtext);
+    }
+
+    .chat-close {
+      background: none;
+      border: none;
+      color: var(--subtext);
+      font-size: 1.3rem;
+      cursor: pointer;
+      padding: 4px 8px;
+    }
+
+    .chat-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .chat-bubble-bot {
+      background: #17241a;
+      border: 1px solid var(--card-border);
+      border-radius: 12px 12px 12px 2px;
+      padding: 10px 14px;
+      font-size: 0.85rem;
+      color: var(--text);
+      max-width: 88%;
+      line-height: 1.4;
+    }
+
+    .chat-bubble-user {
+      background: var(--accent);
+      color: #000;
+      border-radius: 12px 12px 2px 12px;
+      padding: 10px 14px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      max-width: 88%;
+      align-self: flex-end;
+    }
+
+    .chat-questions {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 10px 16px 16px 16px;
+      border-top: 1px solid var(--card-border);
+    }
+
+    .chat-q-btn {
+      background: #0e1610;
+      border: 1px solid var(--card-border);
+      color: var(--text);
+      text-align: left;
+      padding: 10px 12px;
+      border-radius: 10px;
+      font-size: 0.82rem;
+      cursor: pointer;
+    }
+
+    .chat-q-btn:active {
+      background: #17241a;
+    }
+
+    .chat-wa-btn {
+      margin: 4px 16px 16px 16px;
+      background: var(--accent);
+      color: #000;
+      font-weight: bold;
+      border: none;
+      border-radius: 10px;
+      padding: 12px;
+      text-align: center;
+      text-decoration: none;
+      display: block;
+      font-size: 0.85rem;
+    }
   </style>
 </head>
 <body>
@@ -1276,5 +1412,230 @@
   filtrarProductos();
 </script>
 
+<!-- WIDGET DE CHAT DE PREGUNTAS FRECUENTES -->
+<button class="chat-fab" onclick="abrirChatFAQ()">💬</button>
+
+<div class="chat-panel" id="chatPanel">
+  <div class="chat-header">
+    <div>
+      <b>+Tecnologia-Py</b>
+      <span>Respuestas rápidas</span>
+    </div>
+    <button class="chat-close" onclick="cerrarChatFAQ()">✕</button>
+  </div>
+  <div class="chat-body" id="chatBody"></div>
+  <div class="chat-questions" id="chatQuestions"></div>
+</div>
+
+<script>
+  const WA_NUMERO = "595971826300";
+
+  // Preguntas de menú principal (nivel inicial)
+  const MENU_PRINCIPAL = [
+    { texto: "¿Qué necesito para comprar?", accion: () => iniciarFlujoRequisitos() },
+    { texto: "¿Cuándo pago la primera cuota?", accion: () => respuestaSimple("¿Cuándo pago la primera cuota?", "Retirás tu producto hoy y pagás recién la primera cuota a los 30 días.") },
+    { texto: "¿Hacen entregas en todo el país?", accion: () => respuestaSimple("¿Hacen entregas en todo el país?", "Sí, entregamos en los 17 departamentos de Paraguay, directo en la puerta de tu casa.") },
+    { texto: "¿Dónde pago mis cuotas?", accion: () => respuestaSimple("¿Dónde pago mis cuotas?", "En sucursal de Banco Atlas o Banco Paraguayo Japonés, según dónde quede tu solicitud. También podés pagar por banca web sin problema.") },
+    { texto: "¿Venden por unidad o en combos?", accion: () => respuestaSimple("¿Venden por unidad o en combos?", "Ambas opciones. Podés comprar un producto suelto o armar un combo, según lo que necesites.") },
+    { texto: "¿Cuánto tarda la aprobación?", accion: () => respuestaSimple("¿Cuánto tarda la aprobación?", "El análisis de crédito demora 48 horas en procesarse.") },
+    { texto: "Quiero ver precios de un modelo", accion: () => respuestaSimple("Quiero ver precios de un modelo", "Mirá el catálogo en la pantalla principal — ahí están las cuotas de cada modelo disponible. Si no encontrás el que buscás, preguntanos por WhatsApp.") },
+    { texto: "Quiero hablar con una persona", accion: () => mostrarBotonWhatsapp("Quiero hablar con una persona", "¡Dale! Tocá el botón de WhatsApp de abajo y te atendemos directo.") }
+  ];
+
+  function abrirChatFAQ() {
+    document.getElementById('chatPanel').style.display = 'flex';
+    if (document.getElementById('chatBody').innerHTML === '') {
+      agregarBurbujaBot("¡Hola! 👋 Soy el asistente de +Tecnologia-Py. ¿En qué te ayudo?");
+    }
+    mostrarMenuPrincipal();
+  }
+
+  function cerrarChatFAQ() {
+    document.getElementById('chatPanel').style.display = 'none';
+  }
+
+  function agregarBurbujaBot(texto) {
+    const body = document.getElementById('chatBody');
+    body.innerHTML += `<div class="chat-bubble-bot">${texto}</div>`;
+    body.scrollTop = body.scrollHeight;
+  }
+
+  function agregarBurbujaUsuario(texto) {
+    const body = document.getElementById('chatBody');
+    body.innerHTML += `<div class="chat-bubble-user">${texto}</div>`;
+    body.scrollTop = body.scrollHeight;
+  }
+
+  function linkWhatsapp(msg) {
+    return `https://wa.me/${WA_NUMERO}?text=${encodeURIComponent(msg)}`;
+  }
+
+  function mostrarMenuPrincipal() {
+    const cont = document.getElementById('chatQuestions');
+    cont.innerHTML = MENU_PRINCIPAL.map((item, i) =>
+      `<button class="chat-q-btn" onclick="MENU_PRINCIPAL[${i}].accion()">${item.texto}</button>`
+    ).join('') + `<a href="${linkWhatsapp('Hola +Tecnologia-Py, tengo una consulta.')}" target="_blank" class="chat-wa-btn">📲 Escribir por WhatsApp</a>`;
+  }
+
+  function respuestaSimple(pregunta, respuesta) {
+    agregarBurbujaUsuario(pregunta);
+    setTimeout(() => {
+      agregarBurbujaBot(respuesta);
+      mostrarOpcionVolver();
+    }, 300);
+  }
+
+  function mostrarBotonWhatsapp(pregunta, respuesta) {
+    agregarBurbujaUsuario(pregunta);
+    setTimeout(() => {
+      agregarBurbujaBot(respuesta);
+      const cont = document.getElementById('chatQuestions');
+      cont.innerHTML = `<a href="${linkWhatsapp('Hola +Tecnologia-Py, quiero hacer una consulta.')}" target="_blank" class="chat-wa-btn">📲 Escribir por WhatsApp</a>` +
+        `<button class="chat-q-btn" onclick="mostrarMenuPrincipal()">⬅ Volver al menú</button>`;
+    }, 300);
+  }
+
+  function mostrarOpcionVolver() {
+    const cont = document.getElementById('chatQuestions');
+    cont.innerHTML = `<button class="chat-q-btn" onclick="mostrarMenuPrincipal()">⬅ Volver al menú</button>` +
+      `<a href="${linkWhatsapp('Hola +Tecnologia-Py, tengo una consulta.')}" target="_blank" class="chat-wa-btn">📲 Escribir por WhatsApp</a>`;
+  }
+
+  function mostrarOpciones(opciones) {
+    const cont = document.getElementById('chatQuestions');
+    cont.innerHTML = opciones.map(op => `<button class="chat-q-btn" onclick="${op.onclick}">${op.texto}</button>`).join('') +
+      `<button class="chat-q-btn" onclick="mostrarMenuPrincipal()">⬅ Volver al menú</button>`;
+  }
+
+  // ---- FLUJO: ¿Qué necesito para comprar? ----
+
+  function iniciarFlujoRequisitos() {
+    agregarBurbujaUsuario("¿Qué necesito para comprar?");
+    setTimeout(() => {
+      agregarBurbujaBot("Antes que nada: ¿estás anotado en Infoconf (tenés alguna deuda registrada)?");
+      mostrarOpciones([
+        { texto: "No, estoy limpio", onclick: "flujoInfoconfLimpio()" },
+        { texto: "Sí, tengo algo registrado", onclick: "flujoInfoconfSucio()" },
+        { texto: "No sé / no estoy seguro", onclick: "flujoInfoconfNoSabe()" }
+      ]);
+    }, 300);
+  }
+
+  function flujoInfoconfSucio() {
+    agregarBurbujaUsuario("Sí, tengo algo registrado");
+    setTimeout(() => {
+      mostrarBotonWhatsapp("", "Entiendo. Ese caso hay que evaluarlo directamente con nosotros para ver opciones. Escribinos por WhatsApp y lo revisamos juntos.");
+    }, 300);
+  }
+
+  function flujoInfoconfNoSabe() {
+    agregarBurbujaUsuario("No sé / no estoy seguro");
+    setTimeout(() => {
+      agregarBurbujaBot("Sin problema, lo podemos consultar nosotros. Seguimos con un par de preguntas rápidas.");
+      setTimeout(() => preguntarEdad(), 500);
+    }, 300);
+  }
+
+  function flujoInfoconfLimpio() {
+    agregarBurbujaUsuario("No, estoy limpio");
+    setTimeout(() => {
+      agregarBurbujaBot("¡Buenísimo! 🎉 Es muy probable que califiques. Un par de preguntas más.");
+      setTimeout(() => preguntarEdad(), 500);
+    }, 300);
+  }
+
+  function preguntarEdad() {
+    agregarBurbujaBot("¿Tenés entre 20 y 65 años?");
+    mostrarOpciones([
+      { texto: "Sí", onclick: "flujoEdadOk()" },
+      { texto: "No", onclick: "flujoEdadNoOk()" }
+    ]);
+  }
+
+  function flujoEdadNoOk() {
+    agregarBurbujaUsuario("No");
+    setTimeout(() => {
+      agregarBurbujaBot("Por el momento no podemos procesar el crédito fuera de ese rango de edad. ¡Gracias por tu interés!");
+      mostrarOpcionVolver();
+    }, 300);
+  }
+
+  function flujoEdadOk() {
+    agregarBurbujaUsuario("Sí");
+    setTimeout(() => {
+      agregarBurbujaBot("Perfecto. ¿A qué te dedicás?");
+      mostrarOpciones([
+        { texto: "Empleado formal", onclick: "flujoOcupacion('formal')" },
+        { texto: "Trabajo informal", onclick: "flujoOcupacion('informal')" },
+        { texto: "Tengo mi propio negocio", onclick: "flujoOcupacion('negocio')" },
+        { texto: "Funcionario público", onclick: "flujoOcupacion('publico')" }
+      ]);
+    }, 300);
+  }
+
+  function flujoOcupacion(tipo) {
+    const textos = {
+      formal: "Empleado formal",
+      informal: "Trabajo informal",
+      negocio: "Tengo mi propio negocio",
+      publico: "Funcionario público"
+    };
+    agregarBurbujaUsuario(textos[tipo]);
+
+    setTimeout(() => {
+      if (tipo === 'formal' || tipo === 'informal') {
+        agregarBurbujaBot("Vas a necesitar tu cédula y un certificado de trabajo (sirve aunque sea empleo informal).");
+        setTimeout(() => preguntarReferencias(), 500);
+      } else if (tipo === 'negocio') {
+        agregarBurbujaBot("Con tu cédula alcanza. No hace falta comprobar ingresos si tenés tu propio negocio (bodega, copetín, peluquería, almacén, etc.).");
+        setTimeout(() => preguntarReferencias(), 500);
+      } else if (tipo === 'publico') {
+        agregarBurbujaBot("¿Contás con IPS?");
+        mostrarOpciones([
+          { texto: "Sí", onclick: "flujoPublicoIps()" },
+          { texto: "No", onclick: "flujoPublicoIps()" }
+        ]);
+      }
+    }, 300);
+  }
+
+  function flujoPublicoIps() {
+    agregarBurbujaUsuario("Ok");
+    setTimeout(() => {
+      agregarBurbujaBot("Como funcionario público, con tu cédula ya podemos procesar tu pedido.");
+      setTimeout(() => preguntarReferencias(), 500);
+    }, 300);
+  }
+
+  function preguntarReferencias() {
+    agregarBurbujaBot("¿Ya compraste antes a cuotas en otra casa comercial (tenés referencias)?");
+    mostrarOpciones([
+      { texto: "Sí, tengo referencias", onclick: "flujoReferenciasSi()" },
+      { texto: "No, es mi primera vez", onclick: "flujoReferenciasNo()" }
+    ]);
+  }
+
+  function flujoReferenciasSi() {
+    agregarBurbujaUsuario("Sí, tengo referencias");
+    setTimeout(() => {
+      mostrarResumenFinal("No vas a necesitar garante.");
+    }, 300);
+  }
+
+  function flujoReferenciasNo() {
+    agregarBurbujaUsuario("No, es mi primera vez");
+    setTimeout(() => {
+      mostrarResumenFinal("Al ser tu primera compra sin referencias, vas a necesitar un garante.");
+    }, 300);
+  }
+
+  function mostrarResumenFinal(lineaExtra) {
+    agregarBurbujaBot(`${lineaExtra} El análisis de crédito demora 48hs. Pagás tus cuotas en Atlas o Banco Paraguayo Japonés (sucursal o banca web), y el producto se entrega en la puerta de tu casa.`);
+    setTimeout(() => {
+      mostrarBotonWhatsapp("", "¿Seguimos por WhatsApp para avanzar con tu pedido?");
+    }, 600);
+  }
+</script>
+
 </body>
-  </html>
+</html>
