@@ -814,6 +814,7 @@
     <button class="category-btn" onclick="filtrarCategoria('trabaja', this)">💼 Trabaja con Nosotros</button>
     <button class="category-btn" onclick="filtrarCategoria('afiliados', this)">💰 Gana como Afiliado</button>
     <button class="category-btn" onclick="filtrarCategoria('nosotros', this)">🚀 Quiénes Somos</button>
+    <button class="category-btn" onclick="filtrarCategoria('legal', this)">📋 Bases y Condiciones</button>
   </div>
 
   <div id="featuredWrap"></div>
@@ -1098,6 +1099,69 @@
           </p>
           <a href="https://wa.me/${MI_WHATSAPP}?text=${encodeURIComponent('Hola +Tecnologia-Py, quiero saber más sobre ustedes.')}" target="_blank" class="btn-whatsapp-large btn-whatsapp" style="margin-top:15px;">
             📲 Escribinos por WhatsApp
+          </a>
+        </div>
+      `;
+      return;
+    }
+
+    if (categoriaActual === 'legal') {
+      grid.innerHTML = `
+        <div class="action-banner" style="grid-column: 1/-1; text-align:left;">
+          <h2 style="text-align:center;">📋 Bases y Condiciones</h2>
+          <p style="text-align:left; line-height:1.6; font-size:0.85rem;">
+            En +Tecnologia-Py acompañamos a cada paraguayo con soluciones que comunican, conectan y generan beneficios reales. Estas bases explican cómo trabajamos en cada una de nuestras áreas.
+          </p>
+
+          <p style="text-align:left; line-height:1.6; font-size:0.85rem;">
+
+            <b style="color:var(--accent);">1. Nuestras actividades</b><br>
+            +Tecnologia-Py ofrece: (a) venta de celulares y artículos tecnológicos mediante cuotas corridas, sin entrega inicial; (b) asesoría en protección y recuperación de cuentas digitales; y (c) cursos de capacitación en modalidad online e híbrida.
+            <br><br>
+
+            <b style="color:var(--accent);">2. Nuestro rol frente a terceros</b><br>
+            Para la venta a crédito, actuamos como intermediarios: la aprobación final depende del análisis de las entidades financieras (Banco Atlas y Banco Paraguayo Japonés). Para la asesoría en cuentas digitales y otros servicios, operamos conforme a las políticas y exigencias propias de cada proveedor o plataforma involucrada, de forma privada y responsable.
+            <br><br>
+
+            <b style="color:var(--accent);">3. Precios, cuotas y entregas</b><br>
+            Los precios y cuotas publicados pueden variar sin previo aviso y están sujetos a confirmación al momento de la solicitud. Entregamos en todo el territorio paraguayo; los tiempos pueden variar según zona y disponibilidad. En primeras compras sin referencias comerciales previas, podrá solicitarse un garante.
+            <br><br>
+
+            <b style="color:var(--accent);">4. Cursos y constancias</b><br>
+            +Tecnologia-Py emite constancias de aprobación a los alumnos que se capacitan a través de nuestra modalidad híbrida u online, como parte de su desarrollo y crecimiento profesional. Cada curso se rige además por su propio reglamento y bases específicas, disponibles en su sección correspondiente.
+            <br><br>
+
+            <b style="color:var(--accent);">5. Representación de marcas</b><br>
+            +Tecnologia-Py puede representar marcas, productos o servicios de otras entidades que requieran nuestro respaldo, en los términos que se acuerden en cada caso.
+            <br><br>
+
+            <b style="color:var(--accent);">6. Uso de nuestra marca</b><br>
+            +Tecnologia-Py no se hace responsable por el uso o mención de nuestra aplicación, nombre o marca por parte de terceros sin permiso documentado y expreso de nuestra parte.
+            <br><br>
+
+            <b style="color:var(--accent);">7. Nuestra visión</b><br>
+            Brindar siempre servicios que comuniquen, conecten y desarrollen beneficios concretos para cada usuario final.
+            <br><br>
+
+            <b style="color:var(--accent);">8. Datos personales</b><br>
+            Podemos recopilar tu nombre, teléfono y correo cuando nos contactás. Usamos esa información para procesar solicitudes, coordinar entregas, brindarte atención y, si lo autorizás, enviarte novedades. No compartimos tus datos con terceros ajenos a la operación, salvo con las entidades financieras cuando corresponde procesar un crédito. Podés pedirnos eliminar tus datos escribiendo a mastecnologiapy@gmail.com.
+            <br><br>
+
+            <b style="color:var(--accent);">9. Marco legal</b><br>
+            Ejercemos nuestra actividad económica lícita al amparo del <b>Artículo 107 de la Constitución Nacional</b> ("De la libertad de concurrencia"). Nuestras ventas a crédito se enmarcan en la <b>Ley N° 1334/98 "De Defensa del Consumidor y del Usuario"</b>, que reconoce tu derecho a la información sobre el Costo Total de Crédito (Art. 6) y a la cancelación anticipada de tu deuda (Art. 30, modificado por Ley 6624/2020).
+            <br><br>
+
+            <b style="color:var(--accent);">10. Modificaciones</b><br>
+            Estas bases pueden actualizarse en cualquier momento. El uso continuo de la app implica la aceptación de los cambios vigentes.
+
+          </p>
+
+          <div style="text-align:center; margin-top:10px; font-size:0.75rem; color:var(--subtext);">
+            Última actualización: 2026. Este documento es una guía general y no reemplaza el asesoramiento de un profesional legal matriculado en Paraguay.
+          </div>
+
+          <a href="https://wa.me/${MI_WHATSAPP}?text=${encodeURIComponent('Hola +Tecnologia-Py, tengo una consulta sobre las Bases y Condiciones.')}" target="_blank" class="btn-whatsapp-large btn-whatsapp" style="margin-top:18px;">
+            📲 Tengo una consulta
           </a>
         </div>
       `;
